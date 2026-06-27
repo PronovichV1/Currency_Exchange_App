@@ -12,9 +12,6 @@ import service.CurencyService;
 import service.ExchangeRateService;
 import service.ExchangeService;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class ContextListener implements ServletContextListener {
 
