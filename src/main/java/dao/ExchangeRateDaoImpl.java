@@ -12,7 +12,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
     }
 
     @Override
-    public Optional<ExchangeRate> save() {
+    public Optional<ExchangeRate> save(ExchangeRate Entity) {
         return Optional.empty();
     }
 

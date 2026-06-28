@@ -11,7 +11,7 @@ public class CurrencyDaoImpl implements CurrencyDao{
     }
 
     @Override
-    public Optional<Currency> save() {
+    public Optional<Currency> save(Currency Entity) {
         return Optional.empty();
     }
 

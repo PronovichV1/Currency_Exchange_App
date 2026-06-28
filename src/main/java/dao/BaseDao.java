@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface BaseDao<T> {
 
-   Optional<T> save ();
+   Optional<T> save (T Entity);
 
    List<T> findAll();
 
