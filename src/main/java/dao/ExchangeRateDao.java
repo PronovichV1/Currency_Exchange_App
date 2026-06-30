@@ -1,9 +1,0 @@
-package dao;
-
-import model.ExchangeRate;
-
-import java.util.Optional;
-
-public interface ExchangeRateDao extends BaseDao<ExchangeRate>{
-    Optional<ExchangeRate> findSpecificExchangeRate(int baseCurrency, int targetCurrency);
-}
