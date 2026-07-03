@@ -15,10 +15,11 @@ public class CurrencyDaoImpl implements CurrencyDao{
     public final String SQL_QUERY_FIND_ALL_CURRENCIES = "SELECT * FROM currencies";
     public final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * FROM currencies" +
             "WHERE code = ?";
+    public final String SQL_QUERY_POST_CURRENCY = "INSERT INTO currencies(full_name, code, sign) VALUES(?, ?, ?)";
+
 
     @Override
     public Optional<Currency> findByCode(String code) {
-        List<Currency> currencies = new ArrayList<>();
         try(Connection connection = ConnectionManager.getConnection()){
             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE);
             ps.setString(1, code);
@@ -34,7 +35,21 @@ public class CurrencyDaoImpl implements CurrencyDao{
     }
 
     @Override
-    public Optional<Currency> save(Currency Entity) {
+    public Optional<Currency> save(Currency currency) {
+        try(Connection connection = ConnectionManager.getConnection()){
+            PreparedStatement ps = connection.prepareStatement(SQL_QUERY_POST_CURRENCY);
+            ps.setString(1, currency.name());
+            ps.setString(2, currency.code());
+            ps.setString(3, currency.sign());
+            try(ResultSet rs = ps.executeQuery()){
+                if (rs.next()){
+                    return Optional.of(getCurrency(rs));
+                }
+            }
+        }catch (SQLException sqlException){
+            throw new DataBaseException("Db error");
+        }
+
         return Optional.empty();
     }
 

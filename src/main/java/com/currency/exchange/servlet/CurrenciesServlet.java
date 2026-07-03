@@ -1,6 +1,7 @@
 package com.currency.exchange.servlet;
 
 import com.currency.exchange.Utill.RequestUtil;
+import com.currency.exchange.dto.reciept.CurrencyRequestForPostDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.currency.exchange.dto.response.CurrencyResponseDto;
 import jakarta.servlet.ServletException;
@@ -35,4 +36,13 @@ public class CurrenciesServlet extends BaseServlet {
         objectMapper.writeValue(RequestUtil.getWriter(resp), currencyResponseDto);
     }
 
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        CurrencyRequestForPostDto currencyPostDto = RequestUtil.fromJson(req, objectMapper, CurrencyRequestForPostDto.class);
+        Currency currency = CurrencyMapper.INSTANCE.toEntity(currencyPostDto);
+        currencyService.save(currency);
+
+
+    }
 }
