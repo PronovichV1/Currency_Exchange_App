@@ -1,13 +1,11 @@
 package com.currency.exchange.dao;
 
 import com.currency.exchange.Utill.ConnectionManager;
+import com.currency.exchange.exception.CurrencyNotFoundException;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.model.Currency;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -15,9 +13,23 @@ import java.util.Optional;
 
 public class CurrencyDaoImpl implements CurrencyDao{
     public final String SQL_QUERY_FIND_ALL_CURRENCIES = "SELECT * FROM currencies";
+    public final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * FROM currencies" +
+            "WHERE code = ?";
 
     @Override
     public Optional<Currency> findByCode(String code) {
+        List<Currency> currencies = new ArrayList<>();
+        try(Connection connection = ConnectionManager.getConnection()){
+            PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE);
+            ps.setString(1, code);
+            try(ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    return Optional.of(getCurrency(rs));
+                }
+            }
+        }catch (SQLException sqlException){
+            throw new DataBaseException("Db error");
+        }
         return Optional.empty();
     }
 

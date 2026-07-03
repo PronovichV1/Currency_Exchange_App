@@ -23,7 +23,7 @@ public class CurrenciesServlet extends BaseServlet {
     @Override
     public void init() throws ServletException {
         objectMapper = (ObjectMapper)getServletContext().getAttribute("objectMapper");
-        currencyService = (CurrencyService) getServletContext().getAttribute("currencyServer");
+        currencyService = (CurrencyService) getServletContext().getAttribute("currencyService");
     }
 
 
