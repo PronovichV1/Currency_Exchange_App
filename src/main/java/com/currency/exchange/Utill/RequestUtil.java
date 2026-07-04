@@ -17,4 +17,5 @@ public class RequestUtil {
     public static <T> T fromJson(HttpServletRequest request, ObjectMapper objectMapper, Class<T> type) throws IOException {
         return objectMapper.readValue(request.getReader(), type);
     }
+
 }
