@@ -24,7 +24,7 @@ public class ExceptionFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         ServletContext servletContext = filterConfig.getServletContext();
-        objectMapper = (ObjectMapper) servletContext.getAttribute("ObjectMapper");
+        objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
     }
 
     @Override

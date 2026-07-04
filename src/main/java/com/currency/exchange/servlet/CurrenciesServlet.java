@@ -41,9 +41,10 @@ public class CurrenciesServlet extends BaseServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CurrencyRequestForPostDto currencyPostDto = RequestUtil.fromJson(req, objectMapper, CurrencyRequestForPostDto.class);
         currencyPostDto.validate();
-        Currency currency = CurrencyMapper.INSTANCE.toEntity(currencyPostDto);
-        currencyService.save(currency);
-
+        Currency currencyEntity = CurrencyMapper.INSTANCE.toEntity(currencyPostDto);
+        Currency currencyFromDB = currencyService.save(currencyEntity);
+        resp.setStatus(HttpServletResponse.SC_CREATED);
+        objectMapper.writeValue(RequestUtil.getWriter(resp), currencyFromDB);
 
     }
 }

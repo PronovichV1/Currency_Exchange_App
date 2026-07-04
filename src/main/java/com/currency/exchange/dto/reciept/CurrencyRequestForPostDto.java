@@ -32,8 +32,8 @@ public record CurrencyRequestForPostDto(String name, String code, String sign) i
             }
         }
 
-        if (code.equals(String.format("[\\p{isCyrillic}]+"))){
-            throw new InvalidFormatException("Code must contain only Cyrillic letters");
+        if (!code.matches("[A-Za-z\\s]+")){
+            throw new InvalidFormatException("Code must contain only Latin letters");
         }
 
 

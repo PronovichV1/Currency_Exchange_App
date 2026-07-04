@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class ConnectionManager {
 
-    public static final String PATH_TO_DB = "jdbc:sqlite:currency_exchange.db";
+    public static final String PATH_TO_DB = "jdbc:sqlite:E:/Projects/Currency_Exchange_App/src/main/resources/currencie_exchange.db";
 
     static {
         try{

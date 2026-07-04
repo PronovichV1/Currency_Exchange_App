@@ -26,6 +26,6 @@ public class CurrencyService {
     }
 
     public Currency save(Currency currencyPostDto) {
-        return currencyDao.save(currencyPostDto).orElseThrow();
+        return currencyDao.save(currencyPostDto).orElseThrow(() -> new IllegalStateException("Database failed to return saved currency data"));
     }
 }

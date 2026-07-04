@@ -1,9 +1,10 @@
 package com.currency.exchange.dao;
 
 import com.currency.exchange.Utill.ConnectionManager;
-import com.currency.exchange.exception.CurrencyNotFoundException;
+import com.currency.exchange.exception.CurrencyAlreadyExistException;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.model.Currency;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,10 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class CurrencyDaoImpl implements CurrencyDao{
     public final String SQL_QUERY_FIND_ALL_CURRENCIES = "SELECT * FROM currencies";
     public final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * FROM currencies" +
-            "WHERE code = ?";
+            " WHERE code = ?";
     public final String SQL_QUERY_POST_CURRENCY = "INSERT INTO currencies(full_name, code, sign) VALUES(?, ?, ?)";
 
 
@@ -41,16 +43,26 @@ public class CurrencyDaoImpl implements CurrencyDao{
             ps.setString(1, currency.name());
             ps.setString(2, currency.code());
             ps.setString(3, currency.sign());
-            try(ResultSet rs = ps.executeQuery()){
-                if (rs.next()){
-                    return Optional.of(getCurrency(rs));
+            ResultSet rs = ps.executeQuery();
+            int affectedRows = ps.executeUpdate();
+            /// CHECK LATER
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int id = generatedKeys.getInt(1);
+                        return Optional.of(new Currency(id, currency.name(), currency.code(), currency.sign()));
+                    }
                 }
             }
+            return Optional.empty();
         }catch (SQLException sqlException){
+            if("23505".equals(sqlException.getSQLState())){
+               /// log.error();
+                throw new CurrencyAlreadyExistException("Currency with this code already exists");
+            }
+            /// log.error();
             throw new DataBaseException("Db error");
         }
-
-        return Optional.empty();
     }
 
     @Override
@@ -72,9 +84,9 @@ public class CurrencyDaoImpl implements CurrencyDao{
     @Override
     public Currency getCurrency(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
-        String full_name = resultSet.getString("full_name");
-        String code = resultSet.getString("id");
-        String sign = resultSet.getString("id");
-        return new Currency(id, full_name, code, sign);
+        String name = resultSet.getString("full_name");
+        String code = resultSet.getString("code");
+        String sign = resultSet.getString("sign");
+        return new Currency(id, name, code, sign);
     }
 }

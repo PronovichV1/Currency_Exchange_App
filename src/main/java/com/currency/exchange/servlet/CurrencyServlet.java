@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("currency/*")
+@WebServlet("/currency/*")
 public class CurrencyServlet extends HttpServlet {
    private ObjectMapper objectMapper;
    private CurrencyService currencyService;
@@ -29,10 +29,11 @@ public class CurrencyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        CurrencyRequestDto currencyRequestDto = RequestUtil.fromJson(req, objectMapper, CurrencyRequestDto.class);
+        CurrencyRequestDto currencyRequestDto = new CurrencyRequestDto(req.getPathInfo());
+        currencyRequestDto.validate();
         Currency currency = currencyService.findSpecific(currencyRequestDto.code());
         CurrencyResponseDto currencyResponseDto = CurrencyMapper.INSTANCE.toCurrencyResponseDto(currency);
-        resp.setStatus(HttpServletResponse.SC_CREATED);
+        resp.setStatus(HttpServletResponse.SC_OK);
         objectMapper.writeValue(RequestUtil.getWriter(resp), currencyResponseDto);
     }
 }
