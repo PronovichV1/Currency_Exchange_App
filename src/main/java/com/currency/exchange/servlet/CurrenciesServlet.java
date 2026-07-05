@@ -43,8 +43,9 @@ public class CurrenciesServlet extends BaseServlet {
         currencyPostDto.validate();
         Currency currencyEntity = CurrencyMapper.INSTANCE.toEntity(currencyPostDto);
         Currency currencyFromDB = currencyService.save(currencyEntity);
+        CurrencyResponseDto currencyResponseDto = CurrencyMapper.INSTANCE.toCurrencyResponseDto(currencyFromDB);
         resp.setStatus(HttpServletResponse.SC_CREATED);
-        objectMapper.writeValue(RequestUtil.getWriter(resp), currencyFromDB);
+        objectMapper.writeValue(RequestUtil.getWriter(resp), currencyResponseDto);
 
     }
 }
