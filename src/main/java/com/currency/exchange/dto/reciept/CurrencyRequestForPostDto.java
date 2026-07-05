@@ -17,9 +17,9 @@ public record CurrencyRequestForPostDto(String name, String code, String sign) i
         if (sign == null || code.equals("/")) {
             throw new InvalidFormatException("Please enter the currency sign");
         }
-        name = name.replace("/", "").toUpperCase();
+        name = name.replace("/", "");
         code = code.replace("/", "").toUpperCase();
-        sign = sign.replace("/", "").toUpperCase();
+        sign = sign.replace("/", "");
     }
 
 
