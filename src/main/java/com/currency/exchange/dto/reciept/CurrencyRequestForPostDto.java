@@ -4,23 +4,27 @@ import com.currency.exchange.dto.BaseDto;
 import com.currency.exchange.exception.InvalidFormatException;
 
 public record CurrencyRequestForPostDto(String name, String code, String sign) implements BaseDto {
+
+    public CurrencyRequestForPostDto {
+        if (name == null || code.equals("/")) {
+            throw new InvalidFormatException("Please enter the currency name");
+        }
+
+        if (code == null || code.equals("/")) {
+            throw new InvalidFormatException("Please enter the currency code");
+        }
+
+        if (sign == null || code.equals("/")) {
+            throw new InvalidFormatException("Please enter the currency sign");
+        }
+        name = name.replace("/", "").toUpperCase();
+        code = code.replace("/", "").toUpperCase();
+        sign = sign.replace("/", "").toUpperCase();
+    }
+
+
     @Override
     public void validate() {
-        if (name == null){
-            throw new InvalidFormatException("Please enter the name");
-        }
-
-        if (code == null){
-            throw new InvalidFormatException("Please enter the code");
-        }
-
-        if (sign == null){
-            throw new InvalidFormatException("Please enter the sign");
-        }
-
-        if (name.equals(String.format("[\\p{isCyrillic}]+"))){
-            throw new InvalidFormatException("Name must contain only Cyrillic letters");
-        }
 
         if (code.length() != 3){
             throw new InvalidFormatException("Code must be exactly 3 letters");
