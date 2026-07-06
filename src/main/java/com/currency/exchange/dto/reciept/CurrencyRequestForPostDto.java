@@ -6,20 +6,18 @@ import com.currency.exchange.exception.InvalidFormatException;
 public record CurrencyRequestForPostDto(String name, String code, String sign) implements BaseDto {
 
     public CurrencyRequestForPostDto {
-        if (name == null || code.equals("/")) {
+        if (name == null) {
             throw new InvalidFormatException("Please enter the currency name");
         }
 
-        if (code == null || code.equals("/")) {
+        if (code == null) {
             throw new InvalidFormatException("Please enter the currency code");
         }
 
-        if (sign == null || code.equals("/")) {
+        if (sign == null) {
             throw new InvalidFormatException("Please enter the currency sign");
         }
-        name = name.replace("/", "");
-        code = code.replace("/", "").toUpperCase();
-        sign = sign.replace("/", "");
+        code = code.toUpperCase();
     }
 
 
@@ -35,11 +33,6 @@ public record CurrencyRequestForPostDto(String name, String code, String sign) i
                 throw new InvalidFormatException("Code must contain only letters");
             }
         }
-
-        if (!code.matches("[A-Za-z\\s]+")){
-            throw new InvalidFormatException("Code must contain only Latin letters");
-        }
-
 
     }
 }
