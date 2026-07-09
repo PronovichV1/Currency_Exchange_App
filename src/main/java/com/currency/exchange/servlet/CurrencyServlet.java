@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/currency/*")
-public class CurrencyServlet extends HttpServlet {
+public class CurrencyServlet extends BaseServlet {
    private ObjectMapper objectMapper;
    private CurrencyService currencyService;
 

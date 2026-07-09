@@ -39,16 +39,14 @@ public class CurrenciesServlet extends BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String code = req.getParameter("code");
         String name = req.getParameter("name");
+        String code = req.getParameter("code");
         String sign = req.getParameter("sign");
 
         CurrencyRequestForPostDto currencyPostDto = new CurrencyRequestForPostDto(name, code, sign);
         currencyPostDto.validate();
-
         Currency currencyEntity = CurrencyMapper.INSTANCE.toEntity(currencyPostDto);
         Currency currencyFromDB = currencyService.save(currencyEntity);
-
         CurrencyResponseDto currencyResponseDto = CurrencyMapper.INSTANCE.toCurrencyResponseDto(currencyFromDB);
         resp.setStatus(HttpServletResponse.SC_CREATED);
         objectMapper.writeValue(resp.getWriter(), currencyResponseDto);

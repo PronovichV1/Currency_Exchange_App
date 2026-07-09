@@ -1,5 +1,6 @@
 package com.currency.exchange.listener;
 
+import com.currency.exchange.service.ExchangeRateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.currency.exchange.dao.CurrencyDao;
 import com.currency.exchange.dao.CurrencyDaoImpl;
@@ -23,12 +24,12 @@ public class ContextListener implements ServletContextListener {
         ExchangeRateDao exchangeRateDao = new ExchangeRateDaoImpl();
 
         CurrencyService currencyService = new CurrencyService(currencyDao);
-      /// ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao, currencyDao);
+        ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao, currencyDao);
       ///  ExchangeService exchangeService = new ExchangeService(exchangeRateDao);
 
         sc.setAttribute("objectMapper", objectMapper);
         sc.setAttribute("currencyService", currencyService);
-     ///   sc.setAttribute("exchangeRateService", exchangeRateService);
+        sc.setAttribute("exchangeRateService", exchangeRateService);
      ///   sc.setAttribute("exchangeService", exchangeService);
     }
 }

@@ -31,38 +31,33 @@ public class CurrencyDaoImpl implements CurrencyDao{
                 }
             }
         }catch (SQLException sqlException){
-            throw new DataBaseException("Db error");
+            throw new DataBaseException("Failed to find currency by code from the database. SQL State: " + sqlException.getSQLState());
         }
         return Optional.empty();
     }
 
     @Override
     public Optional<Currency> save(Currency currency) {
-        try(Connection connection = ConnectionManager.getConnection()){
-            PreparedStatement ps = connection.prepareStatement(SQL_QUERY_POST_CURRENCY);
+        try(Connection connection = ConnectionManager.getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_POST_CURRENCY, Statement.RETURN_GENERATED_KEYS)){
             ps.setString(1, currency.name());
             ps.setString(2, currency.code());
             ps.setString(3, currency.sign());
-            ResultSet rs = ps.executeQuery();
-            int affectedRows = ps.executeUpdate();
-            /// CHECK LATER
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        int id = generatedKeys.getInt(1);
-                        return Optional.of(new Currency(id, currency.name(), currency.code(), currency.sign()));
-                    }
+            ps.executeUpdate();
+
+            try(ResultSet generatedKeys = ps.getGeneratedKeys()){
+                if (generatedKeys.next()){
+                    int id = generatedKeys.getInt(1);
+                    return Optional.of(new Currency(id, currency.name(), currency.code(), currency.sign()));
                 }
             }
-            return Optional.empty();
         }catch (SQLException sqlException){
             if("23505".equals(sqlException.getSQLState())){
-               /// log.error();
                 throw new CurrencyAlreadyExistException("Currency with this code already exists");
             }
-            /// log.error();
-            throw new DataBaseException("Db error");
+            throw new DataBaseException("Failed to save the currency to the the database. SQL State: " + sqlException.getSQLState());
         }
+        return Optional.empty();
     }
 
     @Override
@@ -76,7 +71,7 @@ public class CurrencyDaoImpl implements CurrencyDao{
             }
 
         }catch (SQLException sqlException){
-            throw new DataBaseException("Db error");
+            throw new DataBaseException("Failed to fetch all currencies from the database. SQL State: " + sqlException.getSQLState());
         }
         return currencyList;
     }

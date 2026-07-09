@@ -1,8 +1,9 @@
 package com.currency.exchange.mapper;
-import com.currency.exchange.dto.reciept.CurrencyRequestDto;
 import com.currency.exchange.dto.reciept.CurrencyRequestForPostDto;
 import com.currency.exchange.dto.response.CurrencyResponseDto;
+import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.model.Currency;
+import com.currency.exchange.model.ExchangeRate;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
@@ -18,10 +19,14 @@ public interface CurrencyMapper {
     @Mapping(source = "sign", target = "sign")
     Currency toEntity(CurrencyRequestForPostDto dto);
 
+
+
+
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "code", target = "code")
     @Mapping(source = "sign", target = "sign")
     CurrencyResponseDto toCurrencyResponseDto(Currency currency);
     List<CurrencyResponseDto> toCurrencyResponseDtoList(List<Currency> currencyList);
+
 }

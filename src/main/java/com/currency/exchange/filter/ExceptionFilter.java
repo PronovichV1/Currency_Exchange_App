@@ -35,7 +35,7 @@ public class ExceptionFilter implements Filter {
         try{
             chain.doFilter(servletRequest, servletResponse);
         }catch (DataBaseException dataBaseException){
-            log.error("DB Error");
+            log.error(dataBaseException.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             ErrorResponseDto errorResponseDto = new ErrorResponseDto(dataBaseException.getLocalizedMessage());
             PrintWriter out = response.getWriter();
