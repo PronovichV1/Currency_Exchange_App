@@ -24,7 +24,7 @@ public class ContextListener implements ServletContextListener {
         ExchangeRateDao exchangeRateDao = new ExchangeRateDaoImpl();
 
         CurrencyService currencyService = new CurrencyService(currencyDao);
-        ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao, currencyDao);
+        ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao, currencyService, currencyDao);
       ///  ExchangeService exchangeService = new ExchangeService(exchangeRateDao);
 
         sc.setAttribute("objectMapper", objectMapper);

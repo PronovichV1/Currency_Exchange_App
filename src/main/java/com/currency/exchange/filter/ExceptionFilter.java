@@ -1,6 +1,7 @@
 package com.currency.exchange.filter;
 
 import com.currency.exchange.exception.CurrencyNotFoundException;
+import com.currency.exchange.exception.ExchangeRateNotFoundException;
 import com.currency.exchange.exception.InvalidFormatException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.currency.exchange.dto.response.ErrorResponseDto;
@@ -50,6 +51,12 @@ public class ExceptionFilter implements Filter {
             log.error("Currency is not exist");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             ErrorResponseDto errorResponseDto = new ErrorResponseDto(currencyNotFoundException.getLocalizedMessage());
+            PrintWriter out = response.getWriter();
+            objectMapper.writeValue(out, errorResponseDto);
+        }catch (ExchangeRateNotFoundException exchangeRateNotFoundException){
+            log.error("Exchange rate is not exist");
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(exchangeRateNotFoundException.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
         }

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class ExchangeRateDaoImpl implements ExchangeRateDao{
 
-    private String SQL_QUERY_FINAL_ALL = "SELECT " +
+    private String SQL_QUERY_FINDAL_ALL = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
             "bc.full_name," +
@@ -27,8 +27,48 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             "JOIN currencies bc ON er.base_currency_id = bc.id " +
             "JOIN currencies tc ON er.target_currency_id = tc.id";
 
+    private String FIND_SPECIFIC_BY_ID = "SELECT * FROM exchange_rates " +
+            "WHERE exchange_rates.id = ?";
+
+    private String SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_CODES = "SELECT " +
+            "er.id," +
+            "bc.id AS base_currency_id," +
+            "bc.full_name," +
+            "bc.code," +
+            "bc.sign," +
+            "tc.id AS target_currency_id," +
+            "tc.full_name," +
+            "tc.code," +
+            "tc.sign," +
+            "er.rate " +
+            "FROM exchange_rates er " +
+            "JOIN currencies bc ON er.base_currency_id = bc.id " +
+            "JOIN currencies tc ON er.target_currency_id = tc.id " +
+            "WHERE bc.id = ? AND tc.id = ?";
+
+
+
+
     @Override
     public Optional<ExchangeRate> findSpecificExchangeRate(int baseCurrency, int targetCurrency) {
+
+        try(Connection connection = ConnectionManager.getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_CODES)){
+            ps.setInt(1, baseCurrency);
+            ps.setInt(2, targetCurrency);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                return Optional.of(getExchangeRate(rs));
+            }
+
+
+        }catch (DataBaseException dataBaseException){
+            throw new DataBaseException("Failed to connect to database");
+        } catch (SQLException sqlException) {
+            throw new RuntimeException("Failed to fetch specific exchange rate from the database. SQL State: " + sqlException.getSQLState());
+        }
+
         return Optional.empty();
     }
 
@@ -41,7 +81,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
     public List<ExchangeRate> findAll() {
         List<ExchangeRate> exchangeRatesList = new ArrayList<>();
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FINAL_ALL)){
+             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FINDAL_ALL)){
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
                 exchangeRatesList.add(getExchangeRate(rs));

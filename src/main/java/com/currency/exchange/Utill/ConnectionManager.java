@@ -19,4 +19,6 @@ public class ConnectionManager {
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(PATH_TO_DB);
     }
+
+
 }

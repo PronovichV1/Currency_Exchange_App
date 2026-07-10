@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/exchangeRates")
-public class ExchangeRates extends BaseServlet {
+public class ExchangeRatesServlet extends BaseServlet {
     private ObjectMapper objectMapper;
     private ExchangeRateService exchangeRateService;
 
