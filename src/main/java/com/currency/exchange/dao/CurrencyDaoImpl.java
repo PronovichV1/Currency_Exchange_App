@@ -40,11 +40,11 @@ public class CurrencyDaoImpl implements CurrencyDao{
     public Optional<Currency> save(Currency currency) {
         try(Connection connection = ConnectionManager.getConnection();
         PreparedStatement ps = connection.prepareStatement(SQL_QUERY_POST_CURRENCY, Statement.RETURN_GENERATED_KEYS)){
+            exists(currency);
             ps.setString(1, currency.name());
             ps.setString(2, currency.code());
             ps.setString(3, currency.sign());
             ps.executeUpdate();
-
             try(ResultSet generatedKeys = ps.getGeneratedKeys()){
                 if (generatedKeys.next()){
                     int id = generatedKeys.getInt(1);
@@ -52,9 +52,6 @@ public class CurrencyDaoImpl implements CurrencyDao{
                 }
             }
         }catch (SQLException sqlException){
-            if("23505".equals(sqlException.getSQLState())){
-                throw new CurrencyAlreadyExistException("Currency with this code already exists");
-            }
             throw new DataBaseException("Failed to save the currency to the the database. SQL State: " + sqlException.getSQLState());
         }
         return Optional.empty();
@@ -83,5 +80,20 @@ public class CurrencyDaoImpl implements CurrencyDao{
         String code = resultSet.getString("code");
         String sign = resultSet.getString("sign");
         return new Currency(id, name, code, sign);
+    }
+
+    @Override
+    public void exists(Currency currency) {
+        try(Connection connection = ConnectionManager.getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE)){
+            ps.setString(1, currency.code());
+            try(ResultSet rs = ps.executeQuery()){
+                if (rs.next()){
+                    throw new CurrencyAlreadyExistException("Currency with this code already exists");
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataBaseException("Failed to connect to database");
+        }
     }
 }

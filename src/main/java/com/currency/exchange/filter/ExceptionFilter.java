@@ -1,11 +1,8 @@
 package com.currency.exchange.filter;
 
-import com.currency.exchange.exception.CurrencyNotFoundException;
-import com.currency.exchange.exception.ExchangeRateNotFoundException;
-import com.currency.exchange.exception.InvalidFormatException;
+import com.currency.exchange.exception.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.currency.exchange.dto.response.ErrorResponseDto;
-import com.currency.exchange.exception.DataBaseException;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,34 +30,45 @@ public class ExceptionFilter implements Filter {
 
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        try{
+        try {
             chain.doFilter(servletRequest, servletResponse);
-        }catch (DataBaseException dataBaseException){
+        } catch (DataBaseException dataBaseException) {
             log.error(dataBaseException.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             ErrorResponseDto errorResponseDto = new ErrorResponseDto(dataBaseException.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
-        }catch (InvalidFormatException invalidFormatException){
+        } catch (InvalidFormatException invalidFormatException) {
             log.error(invalidFormatException.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             ErrorResponseDto errorResponseDto = new ErrorResponseDto(invalidFormatException.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
-        }catch (CurrencyNotFoundException currencyNotFoundException){
+        } catch (CurrencyNotFoundException currencyNotFoundException) {
             log.error("Currency is not exist");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             ErrorResponseDto errorResponseDto = new ErrorResponseDto(currencyNotFoundException.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
-        }catch (ExchangeRateNotFoundException exchangeRateNotFoundException){
+        } catch (ExchangeRateNotFoundException exchangeRateNotFoundException) {
             log.error("Exchange rate is not exist");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             ErrorResponseDto errorResponseDto = new ErrorResponseDto(exchangeRateNotFoundException.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
+        } catch (CurrencyAlreadyExistException currencyAlreadyExistException) {
+            log.error("Currency already exist");
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(currencyAlreadyExistException.getLocalizedMessage());
+            PrintWriter out = response.getWriter();
+            objectMapper.writeValue(out, errorResponseDto);
+        } catch (ExchangeRateAlreadyExistException exchangeRateAlreadyExistException) {
+            log.error(exchangeRateAlreadyExistException.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(exchangeRateAlreadyExistException.getLocalizedMessage());
+            PrintWriter out = response.getWriter();
+            objectMapper.writeValue(out, errorResponseDto);
         }
+
     }
-
-
 }

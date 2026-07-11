@@ -2,7 +2,9 @@ package com.currency.exchange.service;
 
 
 import com.currency.exchange.dao.CurrencyDao;
+import com.currency.exchange.exception.CurrencyAlreadyExistException;
 import com.currency.exchange.exception.CurrencyNotFoundException;
+import com.currency.exchange.exception.ExchangeRateAlreadyExistException;
 import com.currency.exchange.exception.InvalidFormatException;
 import com.currency.exchange.model.Currency;
 import java.util.List;

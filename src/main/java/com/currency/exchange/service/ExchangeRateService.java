@@ -1,9 +1,11 @@
 package com.currency.exchange.service;
 
+import com.currency.exchange.Utill.RequestUtil;
 import com.currency.exchange.dao.CurrencyDao;
 import com.currency.exchange.dao.ExchangeRateDao;
 import com.currency.exchange.dto.reciept.ExchangeRateRequestDto;
 import com.currency.exchange.dto.reciept.ExchangeRatesRequestDto;
+import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.exception.ExchangeRateNotFoundException;
 import com.currency.exchange.model.Currency;
 import com.currency.exchange.model.ExchangeRate;
@@ -37,4 +39,15 @@ public class ExchangeRateService {
         ExchangeRate reqExchangeRate = new ExchangeRate(0, baseCurrency, targetCurrency, exchangeRatesRequestDto.rate());
         return exchangeRateDao.save(reqExchangeRate).orElseThrow();
     }
+
+
+
+    public ExchangeRate updateRate(ExchangeRateRequestDto exchangeRateRequestDto, double rate){
+        ExchangeRate exchangeRate = findByCodePair(exchangeRateRequestDto);
+        return exchangeRateDao.patch(exchangeRate, rate).orElseThrow();
+    }
+
+
+
+
 }

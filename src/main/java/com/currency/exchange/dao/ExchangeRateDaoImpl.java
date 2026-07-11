@@ -1,10 +1,11 @@
 package com.currency.exchange.dao;
 
 import com.currency.exchange.Utill.ConnectionManager;
+import com.currency.exchange.exception.CurrencyAlreadyExistException;
 import com.currency.exchange.exception.DataBaseException;
+import com.currency.exchange.exception.ExchangeRateAlreadyExistException;
 import com.currency.exchange.model.Currency;
 import com.currency.exchange.model.ExchangeRate;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 public class ExchangeRateDaoImpl implements ExchangeRateDao{
 
-    private String SQL_QUERY_FINDAL_ALL = "SELECT " +
+    private final String SQL_QUERY_FINDAL_ALL = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
             "bc.full_name," +
@@ -27,7 +28,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             "FROM exchange_rates er " +
             "JOIN currencies bc ON er.base_currency_id = bc.id " +
             "JOIN currencies tc ON er.target_currency_id = tc.id";
-    private String SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_CODES = "SELECT " +
+    private final String SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_CODES = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
             "bc.full_name," +
@@ -42,8 +43,11 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             "JOIN currencies bc ON er.base_currency_id = bc.id " +
             "JOIN currencies tc ON er.target_currency_id = tc.id " +
             "WHERE bc.id = ? AND tc.id = ?";
-    private String SQL_QUERY_SAVE_EXCHANGE_RATE = "INSERT INTO exchange_rates (base_currency_id, target_currency_id, rate) " +
+    private final String SQL_QUERY_SAVE_EXCHANGE_RATE = "INSERT INTO exchange_rates (base_currency_id, target_currency_id, rate) " +
             "VALUES (?, ?, ?)";
+    private final String SQL_QUERY_PATCH_EXCHANGE_RATE = "UPDATE exchange_rates " +
+            "SET rate = ? " +
+            "WHERE id = ?";
 
 
 
@@ -66,9 +70,46 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
     }
 
     @Override
+    public Optional<ExchangeRate> patch(ExchangeRate exchangeRate, double rate) {
+        try(Connection connection = ConnectionManager.getConnection();
+        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_PATCH_EXCHANGE_RATE, Statement.RETURN_GENERATED_KEYS)){
+            ps.setDouble(1, exchangeRate.id());
+            ps.setDouble(2, exchangeRate.rate());
+            ps.executeUpdate();
+            try(ResultSet generatedKeys = ps.getGeneratedKeys()){
+                if (generatedKeys.next()){
+                    int id = generatedKeys.getInt(1);
+                    return Optional.of(new ExchangeRate(id, exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), exchangeRate.rate()));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataBaseException("Error: database is not found" + e.getSQLState());
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public void exists(ExchangeRate exchangeRate) {
+        try(Connection connection = ConnectionManager.getConnection();
+            PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_CODES)){
+            ps.setInt(1, exchangeRate.baseCurrency().id());
+            ps.setInt(2, exchangeRate.targetCurrency().id());
+            try(ResultSet rs = ps.executeQuery()){
+                if (rs.next()){
+                    throw new ExchangeRateAlreadyExistException("Exchange rate with this code already exists");
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataBaseException("Failed to connect to database");
+        }
+    }
+
+    @Override
     public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
         try (Connection connection = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(SQL_QUERY_SAVE_EXCHANGE_RATE, Statement.RETURN_GENERATED_KEYS)){
+            exists(exchangeRate);
             preparedStatement.setInt(1, exchangeRate.baseCurrency().id());
             preparedStatement.setInt(2, exchangeRate.targetCurrency().id());
             preparedStatement.setDouble(3, exchangeRate.rate());
@@ -79,11 +120,13 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
                     return Optional.of(new ExchangeRate(id, exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), exchangeRate.rate()));
                 }
             }
-        } catch (SQLException e) {
-            throw new DataBaseException("Error: database is not found");
+        }catch (SQLException sqlException){
+            throw new DataBaseException("Error: database is not found" + sqlException.getSQLState());
         }
         return Optional.empty();
     }
+
+
 
     @Override
     public List<ExchangeRate> findAll() {

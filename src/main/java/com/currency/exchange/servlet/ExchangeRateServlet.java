@@ -1,7 +1,8 @@
 package com.currency.exchange.servlet;
 
+import com.currency.exchange.Utill.RequestUtil;
 import com.currency.exchange.dto.reciept.ExchangeRateRequestDto;
-import com.currency.exchange.exception.InvalidFormatException;
+import com.currency.exchange.dto.reciept.ExchangeRatesRequestDto;
 import com.currency.exchange.model.ExchangeRate;
 import com.currency.exchange.service.ExchangeRateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,5 +32,16 @@ public class ExchangeRateServlet extends BaseServlet{
         ExchangeRate exchangeRate = exchangeRateService.findByCodePair(exchangeRateRequestDto);
         resp.setStatus(HttpServletResponse.SC_OK);
         objectMapper.writeValue(resp.getWriter() ,exchangeRate);
+    }
+
+    @Override
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String requestedCurrencies = req.getPathInfo();
+        double rate = Double.parseDouble(req.getParameter("rate"));
+        ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(requestedCurrencies);
+        exchangeRateRequestDto.validate();
+        ExchangeRate exchangeRate = exchangeRateService.updateRate(exchangeRateRequestDto, rate);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        objectMapper.writeValue(resp.getWriter(), exchangeRate);
     }
 }
