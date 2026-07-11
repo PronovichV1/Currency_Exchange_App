@@ -3,10 +3,11 @@ package com.currency.exchange.service;
 import com.currency.exchange.dao.CurrencyDao;
 import com.currency.exchange.dao.ExchangeRateDao;
 import com.currency.exchange.dto.reciept.ExchangeRateRequestDto;
+import com.currency.exchange.dto.reciept.ExchangeRatesRequestDto;
 import com.currency.exchange.exception.ExchangeRateNotFoundException;
+import com.currency.exchange.model.Currency;
 import com.currency.exchange.model.ExchangeRate;
 
-import java.util.Currency;
 import java.util.List;
 
 public class ExchangeRateService {
@@ -28,5 +29,12 @@ public class ExchangeRateService {
         int baseCurrency = currencyService.findSpecific(baseCurrencyCode).id();
         int targetCurrency = currencyService.findSpecific(targetCurrencyCode).id();
         return exchangeRateDao.findSpecificExchangeRate(baseCurrency, targetCurrency).orElseThrow(() -> new ExchangeRateNotFoundException("Exchange rate is not exist"));
+    }
+
+    public ExchangeRate save(ExchangeRatesRequestDto exchangeRatesRequestDto) {
+        Currency baseCurrency = currencyService.findSpecific(exchangeRatesRequestDto.baseCurrencyCode());
+        Currency targetCurrency = currencyService.findSpecific(exchangeRatesRequestDto.targetCurrencyCode());
+        ExchangeRate reqExchangeRate = new ExchangeRate(0, baseCurrency, targetCurrency, exchangeRatesRequestDto.rate());
+        return exchangeRateDao.save(reqExchangeRate).orElseThrow();
     }
 }

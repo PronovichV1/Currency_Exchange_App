@@ -4,6 +4,7 @@ import com.currency.exchange.Utill.ConnectionManager;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.model.Currency;
 import com.currency.exchange.model.ExchangeRate;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,10 +27,6 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             "FROM exchange_rates er " +
             "JOIN currencies bc ON er.base_currency_id = bc.id " +
             "JOIN currencies tc ON er.target_currency_id = tc.id";
-
-    private String FIND_SPECIFIC_BY_ID = "SELECT * FROM exchange_rates " +
-            "WHERE exchange_rates.id = ?";
-
     private String SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_CODES = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
@@ -45,7 +42,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             "JOIN currencies bc ON er.base_currency_id = bc.id " +
             "JOIN currencies tc ON er.target_currency_id = tc.id " +
             "WHERE bc.id = ? AND tc.id = ?";
-
+    private String SQL_QUERY_SAVE_EXCHANGE_RATE = "INSERT INTO exchange_rates (base_currency_id, target_currency_id, rate) " +
+            "VALUES (?, ?, ?)";
 
 
 
@@ -57,23 +55,33 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             ps.setInt(1, baseCurrency);
             ps.setInt(2, targetCurrency);
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()){
                 return Optional.of(getExchangeRate(rs));
             }
-
-
-        }catch (DataBaseException dataBaseException){
-            throw new DataBaseException("Failed to connect to database");
         } catch (SQLException sqlException) {
-            throw new RuntimeException("Failed to fetch specific exchange rate from the database. SQL State: " + sqlException.getSQLState());
+            throw new DataBaseException("Failed to fetch specific exchange rate from the database. SQL State: " + sqlException.getSQLState());
         }
 
         return Optional.empty();
     }
 
     @Override
-    public Optional<ExchangeRate> save(ExchangeRate Entity) {
+    public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
+        try (Connection connection = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_QUERY_SAVE_EXCHANGE_RATE, Statement.RETURN_GENERATED_KEYS)){
+            preparedStatement.setInt(1, exchangeRate.baseCurrency().id());
+            preparedStatement.setInt(2, exchangeRate.targetCurrency().id());
+            preparedStatement.setDouble(3, exchangeRate.rate());
+            preparedStatement.executeUpdate();
+            try(ResultSet generatedKeys = preparedStatement.getGeneratedKeys()){
+                if (generatedKeys.next()){
+                    int id = generatedKeys.getInt(1);
+                    return Optional.of(new ExchangeRate(id, exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), exchangeRate.rate()));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataBaseException("Error: database is not found");
+        }
         return Optional.empty();
     }
 

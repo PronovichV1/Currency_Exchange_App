@@ -1,30 +1,29 @@
 package com.currency.exchange.dto.reciept;
 
+import com.currency.exchange.dto.BaseDto;
 import com.currency.exchange.exception.InvalidFormatException;
 
 import static java.util.Collections.replaceAll;
 
-public record ExchangeRateRequestDto(String requestedCurrencies) {
+public record ExchangeRateRequestDto(String requestedCurrencies) implements BaseDto {
     public ExchangeRateRequestDto{
-        try{
 
-            if (requestedCurrencies == null || requestedCurrencies.equals("/")){
+        if (requestedCurrencies == null || requestedCurrencies.equals("/")){
                 throw new InvalidFormatException("Request is empty");
             }
+        requestedCurrencies = requestedCurrencies.replace("/", "");
+    }
 
-            requestedCurrencies = requestedCurrencies.replace("/", "");
+    @Override
+    public void validate() {
+        if (requestedCurrencies.length() != 6){
+            throw new InvalidFormatException("Request length is invalid.");
+        }
 
-            if (requestedCurrencies.length() != 6){
-                throw new InvalidFormatException("Request length is invalid.");
+        for(Character c: requestedCurrencies.toCharArray()){
+            if(!Character.isLetter(c)){
+                throw new InvalidFormatException("Code must contain only letters.");
             }
-
-            for(Character c: requestedCurrencies.toCharArray()){
-                if(!Character.isLetter(c)){
-                    throw new InvalidFormatException("Code must contain only letters.");
-                }
-            }
-        }catch (InvalidFormatException invalidFormatException){
-            throw new InvalidFormatException(invalidFormatException.getMessage());
         }
     }
 }
