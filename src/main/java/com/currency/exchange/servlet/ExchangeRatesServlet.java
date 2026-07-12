@@ -1,6 +1,7 @@
 package com.currency.exchange.servlet;
 
 import com.currency.exchange.Utill.RequestUtil;
+import com.currency.exchange.dto.reciept.ExchangeRateRequestDto;
 import com.currency.exchange.dto.reciept.ExchangeRatesRequestDto;
 import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.mapper.ExchangeRateMapper;
@@ -51,6 +52,5 @@ public class ExchangeRatesServlet extends BaseServlet {
         resp.setStatus(HttpServletResponse.SC_CREATED);
         ExchangeRateResponseDto exchangeRateResponseDto = ExchangeRateMapper.INSTANCE.toDto(exchangeRateFromDb);
         objectMapper.writeValue(resp.getWriter(), exchangeRateResponseDto);
-
     }
 }
