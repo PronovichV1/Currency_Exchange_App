@@ -72,21 +72,15 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
     @Override
     public Optional<ExchangeRate> patch(ExchangeRate exchangeRate, double rate) {
         try(Connection connection = ConnectionManager.getConnection();
-        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_PATCH_EXCHANGE_RATE, Statement.RETURN_GENERATED_KEYS)){
-            ps.setDouble(1, exchangeRate.id());
-            ps.setDouble(2, exchangeRate.rate());
+        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_PATCH_EXCHANGE_RATE)){
+            ps.setInt(1, exchangeRate.id());
+            ps.setDouble(2, rate);
             ps.executeUpdate();
-            try(ResultSet generatedKeys = ps.getGeneratedKeys()){
-                if (generatedKeys.next()){
-                    int id = generatedKeys.getInt(1);
-                    return Optional.of(new ExchangeRate(id, exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), exchangeRate.rate()));
-                }
-            }
+            return Optional.of(new ExchangeRate(exchangeRate.id(), exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), rate));
+
         } catch (SQLException e) {
             throw new DataBaseException("Error: database is not found" + e.getSQLState());
         }
-
-        return Optional.empty();
     }
 
     @Override

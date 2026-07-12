@@ -44,6 +44,7 @@ public class ExchangeRateService {
 
     public ExchangeRate updateRate(ExchangeRateRequestDto exchangeRateRequestDto, double rate){
         ExchangeRate exchangeRate = findByCodePair(exchangeRateRequestDto);
+        System.out.println(exchangeRate);
         return exchangeRateDao.patch(exchangeRate, rate).orElseThrow();
     }
 

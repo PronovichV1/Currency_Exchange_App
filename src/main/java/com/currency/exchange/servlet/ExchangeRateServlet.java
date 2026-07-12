@@ -50,6 +50,8 @@ public class ExchangeRateServlet extends BaseServlet {
         ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(requestedCurrencies);
         exchangeRateRequestDto.validate();
         ExchangeRate exchangeRate = exchangeRateService.updateRate(exchangeRateRequestDto, rate);
+        System.out.println("After DB manipulations");
+        System.out.println(exchangeRate);
         resp.setStatus(HttpServletResponse.SC_OK);
         objectMapper.writeValue(resp.getWriter(), exchangeRate);
     }
