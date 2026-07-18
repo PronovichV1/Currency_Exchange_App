@@ -14,7 +14,7 @@ public class ExchangeRateService {
 
     private final ExchangeRateDao exchangeRateDao;
     private final CurrencyService currencyService;
-    public ExchangeRateService(ExchangeRateDao exchangeRateDao, CurrencyService currencyService, CurrencyDao currencyDao) {
+    public ExchangeRateService(ExchangeRateDao exchangeRateDao, CurrencyService currencyService) {
         this.exchangeRateDao = exchangeRateDao;
         this.currencyService = currencyService;
     }
@@ -35,9 +35,6 @@ public class ExchangeRateService {
         Currency baseCurrency = currencyService.findSpecific(exchangeRatesRequestDto.baseCurrencyCode());
         Currency targetCurrency = currencyService.findSpecific(exchangeRatesRequestDto.targetCurrencyCode());
         ExchangeRate reqExchangeRate = new ExchangeRate(0, baseCurrency, targetCurrency, exchangeRatesRequestDto.rate());
-        System.out.println("Inside: save");
-        System.out.println(reqExchangeRate);
-        System.out.println("---------------------------");
         return exchangeRateDao.save(reqExchangeRate).orElseThrow();
     }
 
