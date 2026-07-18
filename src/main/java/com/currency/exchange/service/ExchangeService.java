@@ -10,8 +10,9 @@ import java.util.Optional;
 
 public class ExchangeService {
 
-    private ExchangeRateDao exchangeRateDao;
+    private final ExchangeRateDao exchangeRateDao;
     private static final String USD = "USD";
+
     public ExchangeService(ExchangeRateDao exchangeRateDao) {
         this.exchangeRateDao = exchangeRateDao;
     }
@@ -21,7 +22,7 @@ public class ExchangeService {
         String codeB = exchangeRequestDto.to();
         return tryDirectExchange(codeA, codeB, exchangeRequestDto)
                 .or(() -> tryReverseExchange(codeA, codeB, exchangeRequestDto))
-                .or(() -> exchangeByUsd(codeA, codeB, exchangeRequestDto)).orElseThrow(() -> new NoSuchElementException("Operation is not possible with this currencies."));
+                .or(() -> exchangeByUsd(codeA, codeB, exchangeRequestDto)).orElseThrow(() -> new NoSuchElementException("Operation is not possible for these currencies"));
     }
 
     private Exchange getExchange(Optional<ExchangeRate> firstPair, Optional<ExchangeRate> secondPair, ExchangeRequestDto exchangeRequestDto) {
@@ -42,19 +43,19 @@ public class ExchangeService {
     }
 
 
-    private Optional<Exchange> tryDirectExchange(String from, String to,ExchangeRequestDto request){
+    private Optional<Exchange> tryDirectExchange(String from, String to, ExchangeRequestDto request) {
         Optional<ExchangeRate> directPair = exchangeRateDao.findDirectPair(from, to);
-        if (directPair.isPresent()){
+        if (directPair.isPresent()) {
             Exchange exchange = getExchange(directPair, request);
             return Optional.of(exchange);
         }
-       return Optional.empty();
+        return Optional.empty();
 
     }
 
-    private Optional<Exchange> tryReverseExchange(String from, String to, ExchangeRequestDto request){
+    private Optional<Exchange> tryReverseExchange(String from, String to, ExchangeRequestDto request) {
         Optional<ExchangeRate> directPair = exchangeRateDao.findDirectPair(to, from);
-        if(directPair.isPresent()){
+        if (directPair.isPresent()) {
             Exchange exchange = getReverseExchange(directPair, request);
             return Optional.of(exchange);
         }
@@ -70,10 +71,10 @@ public class ExchangeService {
 
     }
 
-    private Optional<Exchange> exchangeByUsd(String from, String to, ExchangeRequestDto request){
+    private Optional<Exchange> exchangeByUsd(String from, String to, ExchangeRequestDto request) {
         Optional<ExchangeRate> firstPair = exchangeRateDao.findDirectPair(USD, from);
         Optional<ExchangeRate> secondPair = exchangeRateDao.findDirectPair(USD, to);
-        if (firstPair.isPresent() && secondPair.isPresent()){
+        if (firstPair.isPresent() && secondPair.isPresent()) {
             return Optional.of(getExchange(firstPair, secondPair, request));
         }
         return Optional.empty();

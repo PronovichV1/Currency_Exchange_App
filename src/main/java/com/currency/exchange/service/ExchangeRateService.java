@@ -14,6 +14,7 @@ public class ExchangeRateService {
 
     private final ExchangeRateDao exchangeRateDao;
     private final CurrencyService currencyService;
+
     public ExchangeRateService(ExchangeRateDao exchangeRateDao, CurrencyService currencyService) {
         this.exchangeRateDao = exchangeRateDao;
         this.currencyService = currencyService;
@@ -24,11 +25,11 @@ public class ExchangeRateService {
     }
 
     public ExchangeRate findByCodePair(ExchangeRateRequestDto exchangeRateRequestDto) {
-        String baseCurrencyCode = exchangeRateRequestDto.requestedCurrencies().substring(0,3);
+        String baseCurrencyCode = exchangeRateRequestDto.requestedCurrencies().substring(0, 3);
         String targetCurrencyCode = exchangeRateRequestDto.requestedCurrencies().substring(3);
         int baseCurrency = currencyService.findSpecific(baseCurrencyCode).id();
         int targetCurrency = currencyService.findSpecific(targetCurrencyCode).id();
-        return exchangeRateDao.findSpecificExchangeRate(baseCurrency, targetCurrency).orElseThrow(() -> new ExchangeRateNotFoundException("Exchange rate is not exist"));
+        return exchangeRateDao.findSpecificExchangeRate(baseCurrency, targetCurrency).orElseThrow(() -> new ExchangeRateNotFoundException("Exchange rate does not exist"));
     }
 
     public ExchangeRate save(ExchangeRatesRequestDto exchangeRatesRequestDto) {
@@ -39,13 +40,10 @@ public class ExchangeRateService {
     }
 
 
-
-    public ExchangeRate updateRate(ExchangeRateRequestDto exchangeRateRequestDto, double rate){
+    public ExchangeRate updateRate(ExchangeRateRequestDto exchangeRateRequestDto, double rate) {
         ExchangeRate exchangeRate = findByCodePair(exchangeRateRequestDto);
         return exchangeRateDao.patch(exchangeRate, rate).orElseThrow();
     }
-
-
 
 
 }
