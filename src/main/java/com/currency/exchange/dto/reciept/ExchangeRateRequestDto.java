@@ -3,8 +3,6 @@ package com.currency.exchange.dto.reciept;
 import com.currency.exchange.dto.BaseDto;
 import com.currency.exchange.exception.InvalidFormatException;
 
-import static java.util.Collections.replaceAll;
-
 public record ExchangeRateRequestDto(String requestedCurrencies) implements BaseDto {
     public ExchangeRateRequestDto {
 
