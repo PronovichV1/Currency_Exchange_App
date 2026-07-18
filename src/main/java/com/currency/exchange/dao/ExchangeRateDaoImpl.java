@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ExchangeRateDaoImpl implements ExchangeRateDao{
+public class ExchangeRateDaoImpl implements ExchangeRateDao {
 
     private final String SQL_QUERY_FINDAL_ALL = "SELECT " +
             "er.id," +
@@ -66,12 +66,12 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
 
     @Override
     public Optional<ExchangeRate> findSpecificExchangeRate(int baseCurrency, int targetCurrency) {
-        try(Connection connection = ConnectionManager.getConnection();
-        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS)){
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS)) {
             ps.setInt(1, baseCurrency);
             ps.setInt(2, targetCurrency);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 return Optional.of(getExchangeRate(rs));
             }
         } catch (SQLException sqlException) {
@@ -82,8 +82,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
 
     @Override
     public Optional<ExchangeRate> patch(ExchangeRate exchangeRate, double rate) {
-        try(Connection connection = ConnectionManager.getConnection();
-        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_PATCH_EXCHANGE_RATE)){
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_PATCH_EXCHANGE_RATE)) {
             ps.setDouble(1, rate);
             ps.setInt(2, exchangeRate.id());
             ps.executeUpdate();
@@ -92,33 +92,35 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             throw new DataBaseException("Error: database is not found" + e.getSQLState());
         }
     }
+
     @Override
     public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
         try (Connection connection = ConnectionManager.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL_QUERY_SAVE_EXCHANGE_RATE, Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_QUERY_SAVE_EXCHANGE_RATE, Statement.RETURN_GENERATED_KEYS)) {
             exists(exchangeRate);
             preparedStatement.setInt(1, exchangeRate.baseCurrency().id());
             preparedStatement.setInt(2, exchangeRate.targetCurrency().id());
             preparedStatement.setDouble(3, exchangeRate.rate());
             preparedStatement.executeUpdate();
-            try(ResultSet generatedKeys = preparedStatement.getGeneratedKeys()){
-                if (generatedKeys.next()){
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
                     int id = generatedKeys.getInt(1);
                     return Optional.of(new ExchangeRate(id, exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), exchangeRate.rate()));
                 }
             }
-        }catch (SQLException sqlException){
+        } catch (SQLException sqlException) {
             throw new DataBaseException("Error: database is not found" + sqlException.getSQLState());
         }
         return Optional.empty();
     }
+
     @Override
     public List<ExchangeRate> findAll() {
         List<ExchangeRate> exchangeRatesList = new ArrayList<>();
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FINDAL_ALL)){
+             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FINDAL_ALL)) {
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 exchangeRatesList.add(getExchangeRate(rs));
             }
         } catch (SQLException sqlException) {
@@ -129,19 +131,20 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
 
     public ExchangeRate getExchangeRate(ResultSet rs) throws SQLException {
         int id = rs.getInt(1);
-        Currency baseCurrency = new Currency(rs.getInt(2), rs.getString(3), rs.getString(4),rs.getString(5));
+        Currency baseCurrency = new Currency(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5));
         Currency targetCurrency = new Currency(rs.getInt(6), rs.getString(7), rs.getString(8), rs.getString(9));
         double rate = rs.getDouble(10);
         return new ExchangeRate(id, baseCurrency, targetCurrency, rate);
     }
+
     @Override
     public void exists(ExchangeRate exchangeRate) {
-        try(Connection connection = ConnectionManager.getConnection();
-            PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS)){
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS)) {
             ps.setInt(1, exchangeRate.baseCurrency().id());
             ps.setInt(2, exchangeRate.targetCurrency().id());
-            try(ResultSet rs = ps.executeQuery()){
-                if (rs.next()){
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     throw new ExchangeRateAlreadyExistException("Exchange rate with this code already exists");
                 }
             }
@@ -151,19 +154,19 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
     }
 
     @Override
-    public Optional<ExchangeRate> findDirectPair(String codeA, String codeB){
+    public Optional<ExchangeRate> findDirectPair(String codeA, String codeB) {
         Optional<ExchangeRate> directExchangePair = queryDatabase(SQL_QUERY_FIND_DIRECT_EXCHANGE_RATE_BY_PAIR_OF_CODES, codeA, codeB);
         return directExchangePair;
 
     }
 
-    private Optional<ExchangeRate> queryDatabase(String sql, String firstCode, String secondCode){
+    private Optional<ExchangeRate> queryDatabase(String sql, String firstCode, String secondCode) {
         try (Connection cn = ConnectionManager.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)){
+             PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, firstCode);
             ps.setString(2, secondCode);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 return Optional.of(getExchangeRate(rs));
             }
         } catch (SQLException e) {

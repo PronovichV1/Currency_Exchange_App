@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class CurrencyDaoImpl implements CurrencyDao{
+public class CurrencyDaoImpl implements CurrencyDao {
     public final String SQL_QUERY_FIND_ALL_CURRENCIES = "SELECT * FROM currencies";
     public final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * " +
             "FROM currencies " +
@@ -23,15 +23,15 @@ public class CurrencyDaoImpl implements CurrencyDao{
 
     @Override
     public Optional<Currency> findByCode(String code) {
-        try(Connection connection = ConnectionManager.getConnection()){
+        try (Connection connection = ConnectionManager.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE);
             ps.setString(1, code);
-            try(ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     return Optional.of(getCurrency(rs));
                 }
             }
-        }catch (SQLException sqlException){
+        } catch (SQLException sqlException) {
             throw new DataBaseException("Failed to find currency by code from the database. SQL State: " + sqlException.getSQLState());
         }
         return Optional.empty();
@@ -39,20 +39,20 @@ public class CurrencyDaoImpl implements CurrencyDao{
 
     @Override
     public Optional<Currency> save(Currency currency) {
-        try(Connection connection = ConnectionManager.getConnection();
-        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_POST_CURRENCY, Statement.RETURN_GENERATED_KEYS)){
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_POST_CURRENCY, Statement.RETURN_GENERATED_KEYS)) {
             exists(currency);
             ps.setString(1, currency.name());
             ps.setString(2, currency.code());
             ps.setString(3, currency.sign());
             ps.executeUpdate();
-            try(ResultSet generatedKeys = ps.getGeneratedKeys()){
-                if (generatedKeys.next()){
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
                     int id = generatedKeys.getInt(1);
                     return Optional.of(new Currency(id, currency.name(), currency.code(), currency.sign()));
                 }
             }
-        }catch (SQLException sqlException){
+        } catch (SQLException sqlException) {
             throw new DataBaseException("Failed to save the currency to the the database. SQL State: " + sqlException.getSQLState());
         }
         return Optional.empty();
@@ -61,13 +61,13 @@ public class CurrencyDaoImpl implements CurrencyDao{
     @Override
     public List<Currency> findAll() {
         List<Currency> currencyList = new ArrayList<>();
-        try(Connection connection = ConnectionManager.getConnection()){
+        try (Connection connection = ConnectionManager.getConnection()) {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(SQL_QUERY_FIND_ALL_CURRENCIES);
-            while (rs.next()){
+            while (rs.next()) {
                 currencyList.add(getCurrency(rs));
             }
-        }catch (SQLException sqlException){
+        } catch (SQLException sqlException) {
             throw new DataBaseException("Failed to fetch all currencies from the database. SQL State: " + sqlException.getSQLState());
         }
         return currencyList;
@@ -84,11 +84,11 @@ public class CurrencyDaoImpl implements CurrencyDao{
 
     @Override
     public void exists(Currency currency) {
-        try(Connection connection = ConnectionManager.getConnection();
-        PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE)){
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE)) {
             ps.setString(1, currency.code());
-            try(ResultSet rs = ps.executeQuery()){
-                if (rs.next()){
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     throw new CurrencyAlreadyExistException("Currency with this code already exists");
                 }
             }
