@@ -11,5 +11,6 @@ import org.mapstruct.factory.Mappers;
 public interface ExchangeMapper {
 
     ExchangeMapper INSTANCE = Mappers.getMapper(ExchangeMapper.class);
+
     ExchangeResponseDto toDto(Exchange exchange);
 }
