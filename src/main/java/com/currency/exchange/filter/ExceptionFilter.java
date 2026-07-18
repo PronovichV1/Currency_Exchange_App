@@ -28,54 +28,38 @@ public class ExceptionFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
-
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-
         try {
             chain.doFilter(servletRequest, servletResponse);
         } catch (DataBaseException e) {
             log.error(e.getMessage());
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
-            PrintWriter out = response.getWriter();
-            objectMapper.writeValue(out, errorResponseDto);
+            sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (InvalidFormatException e) {
             log.error(e.getMessage());
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
-            PrintWriter out = response.getWriter();
-            objectMapper.writeValue(out, errorResponseDto);
+            sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getLocalizedMessage());
         } catch (CurrencyNotFoundException e) {
-            log.error("Currency is not exist");
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
-            PrintWriter out = response.getWriter();
-            objectMapper.writeValue(out, errorResponseDto);
+            log.error("Currency does not exist");
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, e.getLocalizedMessage());
         } catch (ExchangeRateNotFoundException e) {
-            log.error("Exchange rate is not exist");
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
-            PrintWriter out = response.getWriter();
-            objectMapper.writeValue(out, errorResponseDto);
+            log.error("Exchange rate does not exist");
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, e.getLocalizedMessage());
         } catch (CurrencyAlreadyExistException e) {
             log.error("Currency already exist");
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
-            PrintWriter out = response.getWriter();
-            objectMapper.writeValue(out, errorResponseDto);
+            sendErrorResponse(response, HttpServletResponse.SC_CONFLICT, e.getLocalizedMessage());
         } catch (ExchangeRateAlreadyExistException e) {
+            log.error("Exchange rate already exist");
+            sendErrorResponse(response, HttpServletResponse.SC_CONFLICT, e.getLocalizedMessage());
+        } catch (NoSuchElementException e) {
             log.error(e.getMessage());
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
-            PrintWriter out = response.getWriter();
-            objectMapper.writeValue(out, errorResponseDto);
-        } catch (NoSuchElementException e){
-            log.error(e.getMessage());
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
-            PrintWriter out = response.getWriter();
-            objectMapper.writeValue(out, errorResponseDto);
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, e.getLocalizedMessage());
         }
+    }
 
+
+    private void sendErrorResponse(HttpServletResponse response, int statusCode, String message) throws IOException {
+        response.setStatus(statusCode);
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(message);
+        PrintWriter out = response.getWriter();
+        objectMapper.writeValue(out, errorResponseDto);
     }
 }
