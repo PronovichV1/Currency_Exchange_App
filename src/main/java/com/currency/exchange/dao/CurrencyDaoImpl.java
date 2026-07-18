@@ -1,6 +1,6 @@
 package com.currency.exchange.dao;
 
-import com.currency.exchange.Utill.ConnectionManager;
+import com.currency.exchange.Util.ConnectionManager;
 import com.currency.exchange.exception.CurrencyAlreadyExistException;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.model.Currency;
@@ -15,8 +15,9 @@ import java.util.Optional;
 @Slf4j
 public class CurrencyDaoImpl implements CurrencyDao{
     public final String SQL_QUERY_FIND_ALL_CURRENCIES = "SELECT * FROM currencies";
-    public final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * FROM currencies" +
-            " WHERE code = ?";
+    public final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * " +
+            "FROM currencies " +
+            "WHERE code = ?";
     public final String SQL_QUERY_POST_CURRENCY = "INSERT INTO currencies(full_name, code, sign) VALUES(?, ?, ?)";
 
 
@@ -66,7 +67,6 @@ public class CurrencyDaoImpl implements CurrencyDao{
             while (rs.next()){
                 currencyList.add(getCurrency(rs));
             }
-
         }catch (SQLException sqlException){
             throw new DataBaseException("Failed to fetch all currencies from the database. SQL State: " + sqlException.getSQLState());
         }

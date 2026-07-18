@@ -44,9 +44,6 @@ public class ExchangeService {
 
     private Optional<Exchange> tryDirectExchange(String from, String to,ExchangeRequestDto request){
         Optional<ExchangeRate> directPair = exchangeRateDao.findDirectPair(from, to);
-        System.out.println("Inside: tryDirectExchange");
-        System.out.println(directPair);
-        System.out.println("---------------------------");
         if (directPair.isPresent()){
             Exchange exchange = getExchange(directPair, request);
             return Optional.of(exchange);
@@ -57,9 +54,6 @@ public class ExchangeService {
 
     private Optional<Exchange> tryReverseExchange(String from, String to, ExchangeRequestDto request){
         Optional<ExchangeRate> directPair = exchangeRateDao.findDirectPair(to, from);
-        System.out.println("Inside: tryReverseExchange");
-        System.out.println(directPair);
-        System.out.println("---------------------------");
         if(directPair.isPresent()){
             Exchange exchange = getReverseExchange(directPair, request);
             return Optional.of(exchange);

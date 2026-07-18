@@ -1,6 +1,6 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.Utill.RequestUtil;
+import com.currency.exchange.Util.RequestUtil;
 import com.currency.exchange.dto.reciept.CurrencyRequestDto;
 import com.currency.exchange.dto.response.CurrencyResponseDto;
 import com.currency.exchange.mapper.CurrencyMapper;
@@ -9,12 +9,10 @@ import com.currency.exchange.service.CurrencyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/currency/*")
 public class CurrencyServlet extends BaseServlet {

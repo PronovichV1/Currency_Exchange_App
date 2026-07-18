@@ -1,6 +1,6 @@
 package com.currency.exchange.dao;
 
-import com.currency.exchange.Utill.ConnectionManager;
+import com.currency.exchange.Util.ConnectionManager;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.exception.ExchangeRateAlreadyExistException;
 import com.currency.exchange.model.Currency;
@@ -47,7 +47,6 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
     private final String SQL_QUERY_PATCH_EXCHANGE_RATE = "UPDATE exchange_rates " +
             "SET rate = ? " +
             "WHERE id = ?";
-
     private final String SQL_QUERY_FIND_DIRECT_EXCHANGE_RATE_BY_PAIR_OF_CODES = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
@@ -65,12 +64,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             "WHERE bc.code = ? AND tc.code = ?";
 
 
-
-
-
     @Override
     public Optional<ExchangeRate> findSpecificExchangeRate(int baseCurrency, int targetCurrency) {
-
         try(Connection connection = ConnectionManager.getConnection();
         PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS)){
             ps.setInt(1, baseCurrency);
@@ -82,7 +77,6 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
         } catch (SQLException sqlException) {
             throw new DataBaseException("Failed to fetch specific exchange rate from the database. SQL State: " + sqlException.getSQLState());
         }
-
         return Optional.empty();
     }
 
@@ -94,7 +88,6 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
             ps.setInt(2, exchangeRate.id());
             ps.executeUpdate();
             return Optional.of(new ExchangeRate(exchangeRate.id(), exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), rate));
-
         } catch (SQLException e) {
             throw new DataBaseException("Error: database is not found" + e.getSQLState());
         }
@@ -133,6 +126,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
         }
         return exchangeRatesList;
     }
+
     public ExchangeRate getExchangeRate(ResultSet rs) throws SQLException {
         int id = rs.getInt(1);
         Currency baseCurrency = new Currency(rs.getInt(2), rs.getString(3), rs.getString(4),rs.getString(5));
@@ -162,7 +156,6 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao{
         return directExchangePair;
 
     }
-
 
     private Optional<ExchangeRate> queryDatabase(String sql, String firstCode, String secondCode){
         try (Connection cn = ConnectionManager.getConnection();

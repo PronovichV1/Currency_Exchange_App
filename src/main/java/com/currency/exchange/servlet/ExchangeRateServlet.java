@@ -1,6 +1,6 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.Utill.RequestUtil;
+import com.currency.exchange.Util.RequestUtil;
 import com.currency.exchange.dto.reciept.ExchangeRateRequestDto;
 import com.currency.exchange.model.ExchangeRate;
 import com.currency.exchange.service.ExchangeRateService;
@@ -10,7 +10,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 @WebServlet("/exchangeRate/*")

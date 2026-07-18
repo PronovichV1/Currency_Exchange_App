@@ -1,6 +1,6 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.Utill.RequestUtil;
+import com.currency.exchange.Util.RequestUtil;
 import com.currency.exchange.dto.reciept.CurrencyRequestForPostDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.currency.exchange.dto.response.CurrencyResponseDto;
