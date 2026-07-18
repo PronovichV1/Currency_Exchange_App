@@ -11,7 +11,6 @@ import com.currency.exchange.service.ExchangeRateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import com.currency.exchange.model.Currency;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

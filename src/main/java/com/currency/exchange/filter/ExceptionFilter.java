@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.NoSuchElementException;
 
 
 @WebFilter("/*")
@@ -32,40 +33,46 @@ public class ExceptionFilter implements Filter {
 
         try {
             chain.doFilter(servletRequest, servletResponse);
-        } catch (DataBaseException dataBaseException) {
-            log.error(dataBaseException.getMessage());
+        } catch (DataBaseException e) {
+            log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(dataBaseException.getLocalizedMessage());
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
-        } catch (InvalidFormatException invalidFormatException) {
-            log.error(invalidFormatException.getMessage());
+        } catch (InvalidFormatException e) {
+            log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(invalidFormatException.getLocalizedMessage());
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
-        } catch (CurrencyNotFoundException currencyNotFoundException) {
+        } catch (CurrencyNotFoundException e) {
             log.error("Currency is not exist");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(currencyNotFoundException.getLocalizedMessage());
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
-        } catch (ExchangeRateNotFoundException exchangeRateNotFoundException) {
+        } catch (ExchangeRateNotFoundException e) {
             log.error("Exchange rate is not exist");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(exchangeRateNotFoundException.getLocalizedMessage());
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
-        } catch (CurrencyAlreadyExistException currencyAlreadyExistException) {
+        } catch (CurrencyAlreadyExistException e) {
             log.error("Currency already exist");
             response.setStatus(HttpServletResponse.SC_CONFLICT);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(currencyAlreadyExistException.getLocalizedMessage());
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
-        } catch (ExchangeRateAlreadyExistException exchangeRateAlreadyExistException) {
-            log.error(exchangeRateAlreadyExistException.getMessage());
+        } catch (ExchangeRateAlreadyExistException e) {
+            log.error(e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            ErrorResponseDto errorResponseDto = new ErrorResponseDto(exchangeRateAlreadyExistException.getLocalizedMessage());
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
+            PrintWriter out = response.getWriter();
+            objectMapper.writeValue(out, errorResponseDto);
+        } catch (NoSuchElementException e){
+            log.error(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getLocalizedMessage());
             PrintWriter out = response.getWriter();
             objectMapper.writeValue(out, errorResponseDto);
         }

@@ -37,6 +37,9 @@ public class ExchangeRateService {
         Currency baseCurrency = currencyService.findSpecific(exchangeRatesRequestDto.baseCurrencyCode());
         Currency targetCurrency = currencyService.findSpecific(exchangeRatesRequestDto.targetCurrencyCode());
         ExchangeRate reqExchangeRate = new ExchangeRate(0, baseCurrency, targetCurrency, exchangeRatesRequestDto.rate());
+        System.out.println("Inside: save");
+        System.out.println(reqExchangeRate);
+        System.out.println("---------------------------");
         return exchangeRateDao.save(reqExchangeRate).orElseThrow();
     }
 
@@ -44,7 +47,6 @@ public class ExchangeRateService {
 
     public ExchangeRate updateRate(ExchangeRateRequestDto exchangeRateRequestDto, double rate){
         ExchangeRate exchangeRate = findByCodePair(exchangeRateRequestDto);
-        System.out.println(exchangeRate);
         return exchangeRateDao.patch(exchangeRate, rate).orElseThrow();
     }
 

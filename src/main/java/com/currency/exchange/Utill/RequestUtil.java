@@ -1,5 +1,6 @@
 package com.currency.exchange.Utill;
 
+import com.currency.exchange.dto.reciept.ExchangeRequestDto;
 import com.currency.exchange.exception.InvalidFormatException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,4 +37,10 @@ public class RequestUtil {
         }
     }
 
+    public static ExchangeRequestDto getExchangeRequest(HttpServletRequest req) {
+        String from = req.getParameter("from");
+        String to = req.getParameter("to");
+        String amount = req.getParameter("amount");
+        return new ExchangeRequestDto(from, to, amount);
+    }
 }
