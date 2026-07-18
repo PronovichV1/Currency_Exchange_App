@@ -23,7 +23,7 @@ public class CurrenciesServlet extends BaseServlet {
 
     @Override
     public void init() throws ServletException {
-        objectMapper = (ObjectMapper)getServletContext().getAttribute("objectMapper");
+        objectMapper = (ObjectMapper) getServletContext().getAttribute("objectMapper");
         currencyService = (CurrencyService) getServletContext().getAttribute("currencyService");
     }
 
@@ -42,12 +42,9 @@ public class CurrenciesServlet extends BaseServlet {
         String name = req.getParameter("name");
         String code = req.getParameter("code");
         String sign = req.getParameter("sign");
-
         CurrencyRequestForPostDto currencyPostDto = new CurrencyRequestForPostDto(name, code, sign);
         currencyPostDto.validate();
         Currency currencyEntity = CurrencyMapper.INSTANCE.toEntity(currencyPostDto);
-        System.out.println(currencyEntity);
-        System.out.println(currencyEntity.id());
         Currency currencyFromDB = currencyService.save(currencyEntity);
         CurrencyResponseDto currencyResponseDto = CurrencyMapper.INSTANCE.toCurrencyResponseDto(currencyFromDB);
         resp.setStatus(HttpServletResponse.SC_CREATED);

@@ -21,12 +21,12 @@ public class RequestUtil {
         return objectMapper.readValue(request.getReader(), type);
     }
 
-    public static double getRate(HttpServletRequest req){
+    public static double getRate(HttpServletRequest req) {
         double result;
         String body;
-        try(BufferedReader reader = req.getReader()) {
+        try (BufferedReader reader = req.getReader()) {
             body = reader.readLine();
-            if (body == null || !body.startsWith("rate=")){
+            if (body == null || !body.startsWith("rate=")) {
                 throw new InvalidFormatException("Please enter rate");
             }
             String rateValue = body.split("=")[1];

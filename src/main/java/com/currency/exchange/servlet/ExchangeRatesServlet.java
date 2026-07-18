@@ -5,7 +5,6 @@ import com.currency.exchange.dto.reciept.ExchangeRatesRequestDto;
 import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.mapper.ExchangeRateMapper;
 import com.currency.exchange.model.ExchangeRate;
-import com.currency.exchange.service.CurrencyService;
 import com.currency.exchange.service.ExchangeRateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -20,22 +19,20 @@ import java.util.List;
 public class ExchangeRatesServlet extends BaseServlet {
     private ObjectMapper objectMapper;
     private ExchangeRateService exchangeRateService;
-    private CurrencyService currencyService;
 
     @Override
     public void init() throws ServletException {
-    objectMapper = (ObjectMapper) getServletContext().getAttribute("objectMapper");
-    currencyService = (CurrencyService) getServletContext().getAttribute("currencyService");
-    exchangeRateService = (ExchangeRateService) getServletContext().getAttribute("exchangeRateService");
+        objectMapper = (ObjectMapper) getServletContext().getAttribute("objectMapper");
+        exchangeRateService = (ExchangeRateService) getServletContext().getAttribute("exchangeRateService");
 
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-       List<ExchangeRate> exchangeRateList = exchangeRateService.findAll();
-       List<ExchangeRateResponseDto> responseDtoList = ExchangeRateMapper.INSTANCE.toDtoList(exchangeRateList);
-       resp.setStatus(HttpServletResponse.SC_OK);
-       objectMapper.writeValue(RequestUtil.getWriter(resp), responseDtoList);
+        List<ExchangeRate> exchangeRateList = exchangeRateService.findAll();
+        List<ExchangeRateResponseDto> responseDtoList = ExchangeRateMapper.INSTANCE.toDtoList(exchangeRateList);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        objectMapper.writeValue(RequestUtil.getWriter(resp), responseDtoList);
     }
 
     @Override

@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/exchange")
-public class ExchangeServlet extends BaseServlet{
+public class ExchangeServlet extends BaseServlet {
 
     private ObjectMapper objectMapper;
     private ExchangeService exchangeService;
