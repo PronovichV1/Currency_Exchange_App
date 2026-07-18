@@ -6,23 +6,23 @@ import com.currency.exchange.exception.InvalidFormatException;
 import static java.util.Collections.replaceAll;
 
 public record ExchangeRateRequestDto(String requestedCurrencies) implements BaseDto {
-    public ExchangeRateRequestDto{
+    public ExchangeRateRequestDto {
 
-        if (requestedCurrencies == null || requestedCurrencies.equals("/")){
-                throw new InvalidFormatException("Request is empty");
-            }
+        if (requestedCurrencies == null || requestedCurrencies.equals("/")) {
+            throw new InvalidFormatException("Currency pair is required");
+        }
         requestedCurrencies = requestedCurrencies.replace("/", "");
     }
 
     @Override
     public void validate() {
-        if (requestedCurrencies.length() != 6){
-            throw new InvalidFormatException("Request length is invalid.");
+        if (requestedCurrencies.length() != 6) {
+            throw new InvalidFormatException("Currency pair must contain exactly 6 characters");
         }
 
-        for(Character c: requestedCurrencies.toCharArray()){
-            if(!Character.isLetter(c)){
-                throw new InvalidFormatException("Code must contain only letters.");
+        for (Character c : requestedCurrencies.toCharArray()) {
+            if (!Character.isLetter(c)) {
+                throw new InvalidFormatException("Currency codes must contain letters only");
             }
         }
     }

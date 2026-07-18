@@ -8,7 +8,7 @@ public record CurrencyRequestDto(String code) implements BaseDto {
 
     public CurrencyRequestDto {
         if (code == null || code.equals("/")) {
-            throw new InvalidFormatException("Please enter the currency code");
+            throw new InvalidFormatException("Currency code is required");
         }
         code = code.replace("/", "").toUpperCase();
     }
@@ -16,10 +16,10 @@ public record CurrencyRequestDto(String code) implements BaseDto {
     @Override
     public void validate() {
         if (code.length() != 3) {
-            throw new InvalidFormatException("Code must be exactly 3 letters");
+            throw new InvalidFormatException("Currency code must be exactly 3 characters long");
         }
         if (!code.matches("[A-Za-z]{3}")) {
-            throw new InvalidFormatException("Code must contain only letters");
+            throw new InvalidFormatException("Currency code must contain letters only");
         }
     }
 }

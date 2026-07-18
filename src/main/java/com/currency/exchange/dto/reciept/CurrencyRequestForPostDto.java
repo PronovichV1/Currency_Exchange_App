@@ -7,15 +7,15 @@ public record CurrencyRequestForPostDto(String name, String code, String sign) i
 
     public CurrencyRequestForPostDto {
         if (name == null) {
-            throw new InvalidFormatException("Please enter the currency name");
+            throw new InvalidFormatException("Currency name is required");
         }
 
         if (code == null) {
-            throw new InvalidFormatException("Please enter the currency code");
+            throw new InvalidFormatException("Currency code is required");
         }
 
         if (sign == null) {
-            throw new InvalidFormatException("Please enter the currency sign");
+            throw new InvalidFormatException("Currency sign is required");
         }
         code = code.toUpperCase();
     }
@@ -24,13 +24,13 @@ public record CurrencyRequestForPostDto(String name, String code, String sign) i
     @Override
     public void validate() {
 
-        if (code.length() != 3){
-            throw new InvalidFormatException("Code must be exactly 3 letters");
+        if (code.length() != 3) {
+            throw new InvalidFormatException("Currency code must be exactly 3 characters long");
         }
 
-        for(Character c: code.toCharArray()){
-            if(!Character.isLetter(c)){
-                throw new InvalidFormatException("Code must contain only letters");
+        for (Character c : code.toCharArray()) {
+            if (!Character.isLetter(c)) {
+                throw new InvalidFormatException("Currency code must contain letters only");
             }
         }
 
