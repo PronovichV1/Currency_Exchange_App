@@ -2,15 +2,12 @@
 
 ## About the project
 
----
 Pet project for educational purpose.
 
-REST API for describing currencies and exchange rates. It allows users to browse and modify exchange rate and currency lists,
-as well as calculate conversions for arbitrary amounts from one currency to another.
+REST API for describing currencies and exchange rates. It allows users to browse and modify exchange rate and currency
+lists, as well as calculate conversions for arbitrary amounts from one currency to another.
 
 ## Tech Stack
-
----
 
 - Java 21
 - Maven
@@ -23,19 +20,16 @@ as well as calculate conversions for arbitrary amounts from one currency to anot
 - slf4j
 - MapStruct
 
----
-
 ## Features
 
-The REST API implements standard data management operations on the database, allowing you to create, read, and update records:
+The REST API implements standard data management operations on the database, allowing you to create, read, and update
+records:
 
 ### Currency Management
 
 - View all available currencies.
 - Retrieve a specific currency by its code.
 - Add a new currency to the system.
-
----
 
 ### Exchange Rate Management
 
@@ -44,13 +38,9 @@ The REST API implements standard data management operations on the database, all
 - Add a new exchange rate to the database.
 - Update an existing exchange rate value.
 
----
-
 ### Conversion Engine
 
 - Calculate the conversion of the specific amount from a base currency to a target currency.
-
----
 
 ## Prerequisites & Installation
 
@@ -59,7 +49,6 @@ The REST API implements standard data management operations on the database, all
 - **JDK 21**
 - **Maven**
 - **Apache Tomcat 9+ or Tomcat 10**
-
 
 ### Local Setup
 
@@ -80,8 +69,6 @@ The REST API implements standard data management operations on the database, all
    (`bin/startup.sh` in Linux/macOS or `bin/startup.bat` in Windows).
 4. **Access the application** - the app will be available at: http://localhost:8080/currency-exchange/
 
----
-
 ## Database Schema
 
 This application uses SQLite database
@@ -98,8 +85,6 @@ This application uses SQLite database
 - the code in `currency` is unique;
 - the `base_currency_id` + `target_currency_id` pair in `exchange_rates` is unique;
   `exchange_rates` is linked to `currency` via foreign keys.
-
----
 
 ## Endpoints examples:
 
@@ -134,7 +119,7 @@ Retrieving a specific currency. Response example:
     "full_name": "Euro",
     "code": "EUR",
     "sign": "€"
-}
+
 ```
 
 3. **GET** `/exchangeRates`
