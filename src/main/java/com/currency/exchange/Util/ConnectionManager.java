@@ -6,11 +6,13 @@ import java.sql.SQLException;
 
 public class ConnectionManager {
 
-    public static final String DB_PATH = "currency_exchange.db";
-    public static final String DB_URL = "jdbc:sqlite:" + DB_PATH;
+    public static String dbPath = System.getenv("DB_PATH");
 
     static {
         try {
+            if(dbPath == null){
+                dbPath = "jdbc:sqlite:E:/Projects/Currency_Exchange_App/src/main/resources/currency_exchange.db";
+            }
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("SQL not found");
@@ -18,7 +20,7 @@ public class ConnectionManager {
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL);
+        return DriverManager.getConnection(dbPath);
     }
 
 }

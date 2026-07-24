@@ -1,3 +1,4 @@
+
 package com.currency.exchange.listener;
 
 import com.currency.exchange.Util.ConnectionManager;
@@ -5,7 +6,6 @@ import com.currency.exchange.exception.DataBaseException;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
-import jdk.jshell.execution.Util;
 
 import java.io.*;
 import java.sql.Connection;
@@ -22,13 +22,10 @@ public class DatabaseInitializer implements ServletContextListener {
     }
 
     private void initDatabase() {
-
         try (InputStream inputStream = DatabaseInitializer.class.getClassLoader().getResourceAsStream("init.sql")) {
-
             if (inputStream == null) {
                 throw new FileNotFoundException();
             }
-
             String sqlScript = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n"));
             String[] sqlScriptArray = sqlScript.trim().split(";");
 
