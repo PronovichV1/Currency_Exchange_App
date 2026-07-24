@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class ConnectionManager {
 
-    public static final String DB_PATH = "/opt/tomcat/currency_exchange.db";
+    public static final String DB_PATH = "currency_exchange.db";
     public static final String DB_URL = "jdbc:sqlite:" + DB_PATH;
 
     static {
