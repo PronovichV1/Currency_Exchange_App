@@ -5,14 +5,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionManager {
-
+    public static String DB_URL = "jdbc:sqlite:";
     public static String dbPath = System.getenv("DB_PATH");
 
     static {
         try {
             if(dbPath == null){
-                dbPath = "jdbc:sqlite:E:/Projects/Currency_Exchange_App/src/main/resources/currency_exchange.db";
+                dbPath = "E:/Projects/Currency_Exchange_App/src/main/resources/currency_exchange.db";
             }
+            dbPath = DB_URL + dbPath;
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("SQL not found");

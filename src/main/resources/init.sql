@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS exchange_rates (
     target_currency_id INTEGER NOT NULL,
     rate DECIMAL NOT NULL,
     FOREIGN KEY (base_currency_id) REFERENCES currencies(id),
-    FOREIGN KEY (target_currency_id) REFERENCES currencies(id)
+    FOREIGN KEY (target_currency_id) REFERENCES currencies(id),
+    CONSTRAINT key_name UNIQUE (base_currency_id, target_currency_id)
 );
 
 INSERT OR IGNORE INTO currencies (code, full_name, sign) VALUES
