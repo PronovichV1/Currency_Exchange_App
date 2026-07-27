@@ -57,17 +57,93 @@ records:
    _Enter these commands into your terminal:_
    ```
    git clone https://github.com/PronovichV1/Currency_Exchange_App.git
-    cd Currency_Exchange_App
+   cd Currency_Exchange_App
    ```
-2. **Build the project using Maven**
+2. **Change the host path:**
+   - Navigate to `Currency_Exchange_App/src/main/js/app.js`.
+   - On line 2, change `host` to `http://localhost:8080/currency-exchange`
+   
+3. To run the project locally, update the database file path in `ConnectionManager.java` to match your local project folder:
+   
+   ``` java
+   if (dbPath == null) {
+   // Replace with your local path to currency_exchange.db
+   dbPath = "C:/your/local/path/to/currency_exchange.db";
+   }
+   ```
+   
+3. **Build the project using Maven**
 
    _Enter this command into your terminal_
-    ```
+    ``` bash
    mvn clean package
    ```
-3. **Start Tomcat** - run the startup script from the Tomcat `bin/` directory:
-   (`bin/startup.sh` in Linux/macOS or `bin/startup.bat` in Windows).
-4. **Access the application** - the app will be available at: http://localhost:8080/currency-exchange/
+4. **Deploy the application to Tomcat:** 
+   - Navigate to `Currency_Exchange_App/target/` and copy `currency-exchange.war`.
+   - Paste it into your Tomcat `webapps/` directory.
+5. **Start Tomcat:**
+  - Execute the startup script from the Tomcat `bin/` directory:
+  - **Linux / macOS:** `./bin/startup.sh`
+  - **Windows:** `bin/startup.bat`
+6. **Access the application** - the app will be available at: http://localhost:8080/currency-exchange/
+
+### Remote Deployment
+
+1. **Clone the repository**
+
+   _Enter these commands into your terminal:_
+   ``` bash
+   git clone https://github.com/PronovichV1/Currency_Exchange_App.git
+   cd Currency_Exchange_App
+   ```
+2. **Change the host path:**
+   - Navigate to `Currency_Exchange_App/src/main/js/app.js`.
+   - On line 2, change `host` to `http://<your-server-ip>:8080/currency-exchange`.
+
+3. **Build the project using Maven**
+
+   _Enter this command into your terminal_
+    ``` bash
+   mvn clean package
+   ```
+4. **Prepare the server:**
+   Be sure your server has `JDK 21`and `Tomcat 10/11`.
+5. **Configure the Database Path Environment Variable:**
+   Configure Tomcat to locate the SQLite database file by creating a systemd override:
+
+   ``` bash
+   sudo systemctl edit tomcat
+   ```
+   **Add the environment configuration:**
+   Paste the following block between the comment lines (or at the top of the file):
+   ```
+   [Service]
+   Environment="DB_PATH=/var/lib/tomcat/currency_exchange.db"
+   ```
+   **Note:** You can replace `/var/lib/tomcat/currency_exchange.db` with any valid absolute path on your server where Tomcat has read/write permissions.
+   
+   **Save, reload, and restart Tomcat:**
+   Apply this systemd chnages and restart the server:
+   ``` bash
+   sudo systemctl daemon-reload
+   sudo systemctl restart tomcat
+   ```
+   
+6. **Download `.war` file on server:**
+
+   Upload the compiled file to the webapps folder of your Tomcat (via password or SSH key):
+    ``` bash
+   scp target/currency-exchange.war <username>@<your-server-ip>:/opt/tomcat/webapps/
+   ``` 
+7. **Start Tomcat:**
+
+   If Tomcat is not already running, run on the server:
+    ``` bash
+   /opt/tomcat/bin/startup.sh
+   ```
+   
+8. **Access the application** - the app will be available at: `http://<your-server-ip>:8080/currency-exchange`.
+
 
 ## Database Schema
 
