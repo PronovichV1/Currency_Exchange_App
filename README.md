@@ -16,7 +16,6 @@ lists, as well as calculate conversions for arbitrary amounts from one currency 
 - JDBC
 - Jackson
 - Apache Tomcat
-- Lombok
 - slf4j
 - MapStruct
 
