@@ -7,14 +7,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class ConnectionManager {
+public final class ConnectionManager {
     private static final String DB_URL = "jdbc:sqlite:";
     private static String dbPath;
     private static final String PROPERTY_NAME = "db.properties";
     private static final String RESOURCES_KEY = "db.path";
 
 
-
+    private ConnectionManager(){
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
     static {
         try {
             dbPath = loadPathFromProperties();
