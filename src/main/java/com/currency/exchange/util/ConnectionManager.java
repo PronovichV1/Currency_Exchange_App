@@ -1,5 +1,7 @@
 package com.currency.exchange.util;
 
+import com.currency.exchange.exception.DataBaseException;
+
 import java.io.*;
 
 import java.sql.Connection;
@@ -24,7 +26,7 @@ public final class ConnectionManager {
             dbPath = DB_URL + dbPath;
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("SQL not found");
+            throw new DataBaseException("SQLite JDBC driver not found", e);
         }
     }
 
