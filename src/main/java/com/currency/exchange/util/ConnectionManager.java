@@ -17,6 +17,7 @@ public final class ConnectionManager {
     private ConnectionManager(){
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
+
     static {
         try {
             dbPath = loadPathFromProperties();
