@@ -59,7 +59,7 @@ records:
    cd Currency_Exchange_App
    ```
 2. **Change the host path:**
-   - Navigate to `Currency_Exchange_App/src/main/js/app.js`.
+   - Navigate to `Currency_Exchange_App/src/main/webapp/js/app.js`.
    - On line 2, change `host` to `http://localhost:8080/currency-exchange`
    
 3. To run the project locally, update the database file path in `ConnectionManager.java` to match your local project folder:
