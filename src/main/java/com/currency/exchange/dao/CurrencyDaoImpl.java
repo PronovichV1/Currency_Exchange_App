@@ -1,6 +1,6 @@
 package com.currency.exchange.dao;
 
-import com.currency.exchange.Util.ConnectionManager;
+import com.currency.exchange.util.ConnectionManager;
 import com.currency.exchange.exception.CurrencyAlreadyExistException;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.model.Currency;

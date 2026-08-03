@@ -1,6 +1,6 @@
-package com.currency.exchange.Util;
+package com.currency.exchange.util;
 
-import com.currency.exchange.dto.reciept.ExchangeRequestDto;
+import com.currency.exchange.dto.request.ExchangeRequestDto;
 import com.currency.exchange.exception.InvalidFormatException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

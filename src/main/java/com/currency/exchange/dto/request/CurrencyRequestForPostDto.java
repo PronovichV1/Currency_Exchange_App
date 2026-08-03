@@ -1,4 +1,4 @@
-package com.currency.exchange.dto.reciept;
+package com.currency.exchange.dto.request;
 
 import com.currency.exchange.dto.BaseDto;
 import com.currency.exchange.exception.InvalidFormatException;

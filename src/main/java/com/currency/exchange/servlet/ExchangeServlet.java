@@ -1,7 +1,7 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.Util.RequestUtil;
-import com.currency.exchange.dto.reciept.ExchangeRequestDto;
+import com.currency.exchange.util.RequestUtil;
+import com.currency.exchange.dto.request.ExchangeRequestDto;
 import com.currency.exchange.dto.response.ExchangeResponseDto;
 import com.currency.exchange.mapper.ExchangeMapper;
 import com.currency.exchange.model.Exchange;

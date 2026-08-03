@@ -1,10 +1,8 @@
 package com.currency.exchange.mapper;
 
-import com.currency.exchange.dto.reciept.CurrencyRequestForPostDto;
+import com.currency.exchange.dto.request.CurrencyRequestForPostDto;
 import com.currency.exchange.dto.response.CurrencyResponseDto;
-import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.model.Currency;
-import com.currency.exchange.model.ExchangeRate;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 

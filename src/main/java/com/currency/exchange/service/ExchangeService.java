@@ -1,7 +1,7 @@
 package com.currency.exchange.service;
 
 import com.currency.exchange.dao.ExchangeRateDao;
-import com.currency.exchange.dto.reciept.ExchangeRequestDto;
+import com.currency.exchange.dto.request.ExchangeRequestDto;
 import com.currency.exchange.model.Exchange;
 import com.currency.exchange.model.ExchangeRate;
 

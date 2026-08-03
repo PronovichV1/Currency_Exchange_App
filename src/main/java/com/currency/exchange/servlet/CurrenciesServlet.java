@@ -1,7 +1,7 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.Util.RequestUtil;
-import com.currency.exchange.dto.reciept.CurrencyRequestForPostDto;
+import com.currency.exchange.util.RequestUtil;
+import com.currency.exchange.dto.request.CurrencyRequestForPostDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.currency.exchange.dto.response.CurrencyResponseDto;
 import jakarta.servlet.ServletException;
