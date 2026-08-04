@@ -1,22 +1,22 @@
 package com.currency.exchange.dto.request;
 
 import com.currency.exchange.dto.BaseDto;
-import com.currency.exchange.exception.InvalidFormatException;
+import com.currency.exchange.exception.ValidationException;
 
 public record ExchangeRatesRequestDto(String baseCurrencyCode, String targetCurrencyCode,
                                       Double rate) implements BaseDto {
 
     public ExchangeRatesRequestDto {
         if (baseCurrencyCode == null) {
-            throw new InvalidFormatException("Base currency code is required");
+            throw new ValidationException("Base currency code is required");
         }
 
         if (targetCurrencyCode == null) {
-            throw new InvalidFormatException("Target currency code is required");
+            throw new ValidationException("Target currency code is required");
         }
 
         if (rate == null) {
-            throw new InvalidFormatException("Exchange rate is required");
+            throw new ValidationException("Exchange rate is required");
         }
     }
 
@@ -24,27 +24,27 @@ public record ExchangeRatesRequestDto(String baseCurrencyCode, String targetCurr
     @Override
     public void validate() {
         if (baseCurrencyCode.length() != 3) {
-            throw new InvalidFormatException("Base currency code must be exactly 3 characters long");
+            throw new ValidationException("Base currency code must be exactly 3 characters long");
         }
 
         for (Character c : baseCurrencyCode.toCharArray()) {
             if (!Character.isLetter(c)) {
-                throw new InvalidFormatException("Base currency code must contain letters only");
+                throw new ValidationException("Base currency code must contain letters only");
             }
         }
 
         if (targetCurrencyCode.length() != 3) {
-            throw new InvalidFormatException("Target currency code must be exactly 3 characters long");
+            throw new ValidationException("Target currency code must be exactly 3 characters long");
         }
 
         for (Character c : targetCurrencyCode.toCharArray()) {
             if (!Character.isLetter(c)) {
-                throw new InvalidFormatException("Target currency code must contain letters only");
+                throw new ValidationException("Target currency code must contain letters only");
             }
         }
 
         if (rate <= 0) {
-            throw new InvalidFormatException("Exchange rate must be greater than zero");
+            throw new ValidationException("Exchange rate must be greater than zero");
         }
     }
 }

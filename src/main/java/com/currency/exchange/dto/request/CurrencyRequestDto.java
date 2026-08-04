@@ -1,14 +1,14 @@
 package com.currency.exchange.dto.request;
 
 import com.currency.exchange.dto.BaseDto;
-import com.currency.exchange.exception.InvalidFormatException;
+import com.currency.exchange.exception.ValidationException;
 
 
 public record CurrencyRequestDto(String code) implements BaseDto {
 
     public CurrencyRequestDto {
         if (code == null || code.equals("/")) {
-            throw new InvalidFormatException("Currency code is required");
+            throw new ValidationException("Currency code is required");
         }
         code = code.replace("/", "").toUpperCase();
     }
@@ -16,10 +16,10 @@ public record CurrencyRequestDto(String code) implements BaseDto {
     @Override
     public void validate() {
         if (code.length() != 3) {
-            throw new InvalidFormatException("Currency code must be exactly 3 characters long");
+            throw new ValidationException("Currency code must be exactly 3 characters long");
         }
         if (!code.matches("[A-Za-z]{3}")) {
-            throw new InvalidFormatException("Currency code must contain letters only");
+            throw new ValidationException("Currency code must contain letters only");
         }
     }
 }

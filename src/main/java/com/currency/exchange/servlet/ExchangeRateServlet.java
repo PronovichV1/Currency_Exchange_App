@@ -1,7 +1,6 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.exception.InvalidFormatException;
-import com.currency.exchange.util.RequestUtil;
+import com.currency.exchange.exception.ValidationException;
 import com.currency.exchange.dto.request.ExchangeRateRequestDto;
 import com.currency.exchange.model.ExchangeRate;
 import com.currency.exchange.service.ExchangeRateService;
@@ -61,15 +60,15 @@ public class ExchangeRateServlet extends BaseServlet {
         try (BufferedReader reader = req.getReader()) {
             body = reader.readLine();
             if (body == null || !body.startsWith("rate=")) {
-                throw new InvalidFormatException("Please enter rate");
+                throw new ValidationException("Please enter rate");
             }
             String rateValue = body.split("=")[1];
             result = Double.parseDouble(rateValue);
             return result;
         } catch (IOException e) {
-            throw new InvalidFormatException("Failed to read request body");
+            throw new ValidationException("Failed to read request body");
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-            throw new InvalidFormatException("Invalid rate parameter format");
+            throw new ValidationException("Invalid rate parameter format");
         }
     }
 }

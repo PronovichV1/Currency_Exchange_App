@@ -34,7 +34,7 @@ public class ExceptionFilter implements Filter {
         } catch (DataBaseException e) {
             log.error(e.getMessage(), e);
             sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        } catch (InvalidFormatException e) {
+        } catch (ValidationException e) {
             log.warn(e.getMessage());
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getLocalizedMessage());
         } catch (CurrencyNotFoundException e) {

@@ -1,13 +1,13 @@
 package com.currency.exchange.dto.request;
 
 import com.currency.exchange.dto.BaseDto;
-import com.currency.exchange.exception.InvalidFormatException;
+import com.currency.exchange.exception.ValidationException;
 
 public record ExchangeRateRequestDto(String requestedCurrencies) implements BaseDto {
     public ExchangeRateRequestDto {
 
         if (requestedCurrencies == null || requestedCurrencies.equals("/")) {
-            throw new InvalidFormatException("Currency pair is required");
+            throw new ValidationException("Currency pair is required");
         }
         requestedCurrencies = requestedCurrencies.replace("/", "");
     }
@@ -15,12 +15,12 @@ public record ExchangeRateRequestDto(String requestedCurrencies) implements Base
     @Override
     public void validate() {
         if (requestedCurrencies.length() != 6) {
-            throw new InvalidFormatException("Currency pair must contain exactly 6 characters");
+            throw new ValidationException("Currency pair must contain exactly 6 characters");
         }
 
         for (Character c : requestedCurrencies.toCharArray()) {
             if (!Character.isLetter(c)) {
-                throw new InvalidFormatException("Currency codes must contain letters only");
+                throw new ValidationException("Currency codes must contain letters only");
             }
         }
     }
