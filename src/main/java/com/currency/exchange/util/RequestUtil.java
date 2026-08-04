@@ -13,10 +13,6 @@ import java.io.PrintWriter;
 
 public class RequestUtil {
 
-    public static <T> T fromJson(HttpServletRequest request, ObjectMapper objectMapper, Class<T> type) throws IOException {
-        return objectMapper.readValue(request.getReader(), type);
-    }
-
     public static double getRate(HttpServletRequest req) {
         double result;
         String body;
