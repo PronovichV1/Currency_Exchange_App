@@ -32,27 +32,35 @@ public class ExceptionFilter implements Filter {
         try {
             chain.doFilter(servletRequest, servletResponse);
         } catch (DataBaseException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (InvalidFormatException e) {
-            log.error(e.getMessage());
+            log.warn(e.getMessage());
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getLocalizedMessage());
         } catch (CurrencyNotFoundException e) {
-            log.error("Currency does not exist");
+            log.warn("Currency does not exist");
             sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, e.getLocalizedMessage());
         } catch (ExchangeRateNotFoundException e) {
-            log.error("Exchange rate does not exist");
+            log.warn("Exchange rate does not exist");
             sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, e.getLocalizedMessage());
         } catch (CurrencyAlreadyExistException e) {
-            log.error("Currency already exist");
+            log.warn("Currency already exist");
             sendErrorResponse(response, HttpServletResponse.SC_CONFLICT, e.getLocalizedMessage());
         } catch (ExchangeRateAlreadyExistException e) {
-            log.error("Exchange rate already exist");
+            log.warn("Exchange rate already exist");
             sendErrorResponse(response, HttpServletResponse.SC_CONFLICT, e.getLocalizedMessage());
         } catch (NoSuchElementException e) {
-            log.error(e.getMessage());
+            log.warn(e.getMessage());
             sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, e.getLocalizedMessage());
+        } catch (Exception e){
+            log.error("Unexpected request error", e);
+            sendErrorResponse(
+                    response,
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Internal server error");
         }
+
+
     }
 
 
