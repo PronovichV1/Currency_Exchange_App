@@ -33,7 +33,7 @@ public class CurrenciesServlet extends BaseServlet {
         List<Currency> currencyList = currencyService.findAllCurrencies();
         List<CurrencyResponseDto> currencyResponseDto = CurrencyMapper.INSTANCE.toCurrencyResponseDtoList(currencyList);
         resp.setStatus(HttpServletResponse.SC_OK);
-        objectMapper.writeValue(RequestUtil.getWriter(resp), currencyResponseDto);
+        objectMapper.writeValue(resp.getWriter(), currencyResponseDto);
     }
 
 

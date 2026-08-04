@@ -32,7 +32,7 @@ public class ExchangeRatesServlet extends BaseServlet {
         List<ExchangeRate> exchangeRateList = exchangeRateService.findAll();
         List<ExchangeRateResponseDto> responseDtoList = ExchangeRateMapper.INSTANCE.toDtoList(exchangeRateList);
         resp.setStatus(HttpServletResponse.SC_OK);
-        objectMapper.writeValue(RequestUtil.getWriter(resp), responseDtoList);
+        objectMapper.writeValue(resp.getWriter(), responseDtoList);
     }
 
     @Override

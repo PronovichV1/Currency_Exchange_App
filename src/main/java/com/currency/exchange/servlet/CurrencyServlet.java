@@ -32,6 +32,6 @@ public class CurrencyServlet extends BaseServlet {
         Currency currency = currencyService.findSpecific(currencyRequestDto.code());
         CurrencyResponseDto currencyResponseDto = CurrencyMapper.INSTANCE.toCurrencyResponseDto(currency);
         resp.setStatus(HttpServletResponse.SC_OK);
-        objectMapper.writeValue(RequestUtil.getWriter(resp), currencyResponseDto);
+        objectMapper.writeValue(resp.getWriter(), currencyResponseDto);
     }
 }
