@@ -32,10 +32,10 @@ public class ExceptionFilter implements Filter {
         try {
             chain.doFilter(servletRequest, servletResponse);
         } catch (DataBaseException e) {
-            log.error(e.getMessage(), e);
+            log.error("Database error occurred", e);
             sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (ValidationException e) {
-            log.warn(e.getMessage());
+            log.warn("Validation failed: ", e.getMessage());
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getLocalizedMessage());
         } catch (CurrencyNotFoundException e) {
             log.warn("Currency does not exist");

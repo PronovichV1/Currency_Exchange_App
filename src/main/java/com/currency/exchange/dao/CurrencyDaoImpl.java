@@ -32,7 +32,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
                 }
             }
         } catch (SQLException sqlException) {
-            throw new DataBaseException("Failed to find currency by code from the database. SQL State: " + sqlException.getSQLState());
+            throw new DataBaseException("Failed to find currency by code from the database. SQL State: " + sqlException.getSQLState(), sqlException);
         }
         return Optional.empty();
     }
@@ -53,7 +53,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
                 }
             }
         } catch (SQLException sqlException) {
-            throw new DataBaseException("Failed to save the currency to the the database. SQL State: " + sqlException.getSQLState());
+            throw new DataBaseException("Failed to save the currency to the the database. SQL State: " + sqlException.getSQLState(), sqlException);
         }
         return Optional.empty();
     }
@@ -68,7 +68,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
                 currencyList.add(getCurrency(rs));
             }
         } catch (SQLException sqlException) {
-            throw new DataBaseException("Failed to fetch all currencies from the database. SQL State: " + sqlException.getSQLState());
+            throw new DataBaseException("Failed to fetch all currencies from the database. SQL State: " + sqlException.getSQLState(), sqlException);
         }
         return currencyList;
     }
@@ -93,7 +93,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
                 }
             }
         } catch (SQLException e) {
-            throw new DataBaseException("Failed to connect to database");
+            throw new DataBaseException("Failed to connect to database", e);
         }
     }
 }

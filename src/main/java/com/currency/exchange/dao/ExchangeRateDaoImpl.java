@@ -75,7 +75,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
                 return Optional.of(getExchangeRate(rs));
             }
         } catch (SQLException sqlException) {
-            throw new DataBaseException("Failed to fetch specific exchange rate from the database. SQL State: " + sqlException.getSQLState());
+            throw new DataBaseException("Failed to fetch specific exchange rate from the database. SQL State: " + sqlException.getSQLState(), sqlException);
         }
         return Optional.empty();
     }
@@ -89,7 +89,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
             ps.executeUpdate();
             return Optional.of(new ExchangeRate(exchangeRate.id(), exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), rate));
         } catch (SQLException e) {
-            throw new DataBaseException("Error: database is not found" + e.getSQLState());
+            throw new DataBaseException("Error: database is not found" + e.getSQLState(), e);
         }
     }
 
@@ -109,7 +109,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
                 }
             }
         } catch (SQLException sqlException) {
-            throw new DataBaseException("Error: database is not found" + sqlException.getSQLState());
+            throw new DataBaseException("Error: database is not found" + sqlException.getSQLState(), sqlException);
         }
         return Optional.empty();
     }
@@ -124,7 +124,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
                 exchangeRatesList.add(getExchangeRate(rs));
             }
         } catch (SQLException sqlException) {
-            throw new DataBaseException("Failed to fetch all exchange rates from the database. SQL State: " + sqlException.getSQLState());
+            throw new DataBaseException("Failed to fetch all exchange rates from the database. SQL State: " + sqlException.getSQLState(), sqlException);
         }
         return exchangeRatesList;
     }
@@ -149,7 +149,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
                 }
             }
         } catch (SQLException e) {
-            throw new DataBaseException("Failed to connect to database");
+            throw new DataBaseException("Failed to connect to database", e);
         }
     }
 
@@ -170,7 +170,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
                 return Optional.of(getExchangeRate(rs));
             }
         } catch (SQLException e) {
-            throw new DataBaseException("Error: database is not found" + e.getSQLState());
+            throw new DataBaseException("Error: database is not found" + e.getSQLState(), e);
         }
         return Optional.empty();
     }
