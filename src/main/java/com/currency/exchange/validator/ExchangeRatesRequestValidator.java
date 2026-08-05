@@ -1,0 +1,33 @@
+package com.currency.exchange.validator;
+
+import com.currency.exchange.dto.request.ExchangeRatesRequestDto;
+import com.currency.exchange.exception.ValidationException;
+
+public class ExchangeRatesRequestValidator implements Validator<ExchangeRatesRequestDto>{
+    @Override
+    public void validate(ExchangeRatesRequestDto target) {
+        if (target.baseCurrencyCode().length() != 3) {
+            throw new ValidationException("Base currency code must be exactly 3 characters long");
+        }
+
+        for (Character c : target.baseCurrencyCode().toCharArray()) {
+            if (!Character.isLetter(c)) {
+                throw new ValidationException("Base currency code must contain letters only");
+            }
+        }
+
+        if (target.targetCurrencyCode().length() != 3) {
+            throw new ValidationException("Target currency code must be exactly 3 characters long");
+        }
+
+        for (Character c : target.targetCurrencyCode().toCharArray()) {
+            if (!Character.isLetter(c)) {
+                throw new ValidationException("Target currency code must contain letters only");
+            }
+        }
+
+        if (target.rate() <= 0) {
+            throw new ValidationException("Exchange rate must be greater than zero");
+        }
+    }
+}

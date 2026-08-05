@@ -6,6 +6,8 @@ import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.mapper.ExchangeRateMapper;
 import com.currency.exchange.model.ExchangeRate;
 import com.currency.exchange.service.ExchangeRateService;
+import com.currency.exchange.validator.ExchangeRateRequestValidator;
+import com.currency.exchange.validator.ExchangeRatesRequestValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,12 +21,14 @@ import java.util.List;
 public class ExchangeRatesServlet extends BaseServlet {
     private ObjectMapper objectMapper;
     private ExchangeRateService exchangeRateService;
+    private ExchangeRatesRequestValidator validator;
+
 
     @Override
     public void init() throws ServletException {
         objectMapper = (ObjectMapper) getServletContext().getAttribute("objectMapper");
         exchangeRateService = (ExchangeRateService) getServletContext().getAttribute("exchangeRateService");
-
+        this.validator = new ExchangeRatesRequestValidator();
     }
 
     @Override
@@ -42,7 +46,7 @@ public class ExchangeRatesServlet extends BaseServlet {
         String reqRateString = req.getParameter("rate");
         double reqRate = Double.parseDouble(reqRateString);
         ExchangeRatesRequestDto exchangeRatesRequestDto = new ExchangeRatesRequestDto(reqBaseCode, reqTargetCode, reqRate);
-        exchangeRatesRequestDto.validate();
+        validator.validate(exchangeRatesRequestDto);
         ExchangeRate exchangeRateFromDb = exchangeRateService.save(exchangeRatesRequestDto);
         resp.setStatus(HttpServletResponse.SC_CREATED);
         ExchangeRateResponseDto exchangeRateResponseDto = ExchangeRateMapper.INSTANCE.toDto(exchangeRateFromDb);

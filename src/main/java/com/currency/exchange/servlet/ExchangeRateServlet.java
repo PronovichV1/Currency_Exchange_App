@@ -4,6 +4,7 @@ import com.currency.exchange.exception.ValidationException;
 import com.currency.exchange.dto.request.ExchangeRateRequestDto;
 import com.currency.exchange.model.ExchangeRate;
 import com.currency.exchange.service.ExchangeRateService;
+import com.currency.exchange.validator.ExchangeRateRequestValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,11 +18,13 @@ import java.io.IOException;
 public class ExchangeRateServlet extends BaseServlet {
     private ObjectMapper objectMapper;
     private ExchangeRateService exchangeRateService;
+    ExchangeRateRequestValidator validator;
 
     @Override
     public void init() throws ServletException {
         objectMapper = (ObjectMapper) getServletContext().getAttribute("objectMapper");
         exchangeRateService = (ExchangeRateService) getServletContext().getAttribute("exchangeRateService");
+        this.validator = new ExchangeRateRequestValidator();
     }
 
     @Override
@@ -37,7 +40,7 @@ public class ExchangeRateServlet extends BaseServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requestedCurrencies = req.getPathInfo();
         ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(requestedCurrencies);
-        exchangeRateRequestDto.validate();
+        validator.validate(exchangeRateRequestDto);
         ExchangeRate exchangeRate = exchangeRateService.findByCodePair(exchangeRateRequestDto);
         resp.setStatus(HttpServletResponse.SC_OK);
         objectMapper.writeValue(resp.getWriter(), exchangeRate);
@@ -48,7 +51,7 @@ public class ExchangeRateServlet extends BaseServlet {
         String requestedCurrencies = req.getPathInfo();
         double rate = getRate(req);
         ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(requestedCurrencies);
-        exchangeRateRequestDto.validate();
+        validator.validate(exchangeRateRequestDto);
         ExchangeRate exchangeRate = exchangeRateService.updateRate(exchangeRateRequestDto, rate);
         resp.setStatus(HttpServletResponse.SC_OK);
         objectMapper.writeValue(resp.getWriter(), exchangeRate);

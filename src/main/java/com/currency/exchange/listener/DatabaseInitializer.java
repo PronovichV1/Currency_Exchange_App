@@ -38,7 +38,7 @@ public class DatabaseInitializer implements ServletContextListener {
                     statement.executeUpdate(line);
                 }
             } catch (SQLException e) {
-                throw new DataBaseException("Failed to execute database initialization script");
+                throw new DataBaseException("Failed to execute database initialization script", e);
             }
 
         } catch (IOException e) {

@@ -1,7 +1,8 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.util.RequestUtil;
+
 import com.currency.exchange.dto.request.CurrencyRequestForPostDto;
+import com.currency.exchange.validator.CurrencyRequestForPostValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.currency.exchange.dto.response.CurrencyResponseDto;
 import jakarta.servlet.ServletException;
@@ -20,11 +21,13 @@ public class CurrenciesServlet extends BaseServlet {
 
     private ObjectMapper objectMapper;
     private CurrencyService currencyService;
+    private CurrencyRequestForPostValidator validator;
 
     @Override
     public void init() throws ServletException {
         objectMapper = (ObjectMapper) getServletContext().getAttribute("objectMapper");
         currencyService = (CurrencyService) getServletContext().getAttribute("currencyService");
+        this.validator = new CurrencyRequestForPostValidator();
     }
 
 
@@ -43,7 +46,7 @@ public class CurrenciesServlet extends BaseServlet {
         String code = req.getParameter("code");
         String sign = req.getParameter("sign");
         CurrencyRequestForPostDto currencyPostDto = new CurrencyRequestForPostDto(name, code, sign);
-        currencyPostDto.validate();
+        validator.validate(currencyPostDto);
         Currency currencyEntity = CurrencyMapper.INSTANCE.toEntity(currencyPostDto);
         Currency currencyFromDB = currencyService.save(currencyEntity);
         CurrencyResponseDto currencyResponseDto = CurrencyMapper.INSTANCE.toCurrencyResponseDto(currencyFromDB);

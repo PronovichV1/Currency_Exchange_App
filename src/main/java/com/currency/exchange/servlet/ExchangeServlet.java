@@ -6,6 +6,7 @@ import com.currency.exchange.dto.response.ExchangeResponseDto;
 import com.currency.exchange.mapper.ExchangeMapper;
 import com.currency.exchange.model.Exchange;
 import com.currency.exchange.service.ExchangeService;
+import com.currency.exchange.validator.ExchangeRequestValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,17 +20,20 @@ public class ExchangeServlet extends BaseServlet {
 
     private ObjectMapper objectMapper;
     private ExchangeService exchangeService;
+    private ExchangeRequestValidator validator;
+
 
     @Override
     public void init() throws ServletException {
         objectMapper = (ObjectMapper) getServletContext().getAttribute("objectMapper");
         exchangeService = (ExchangeService) getServletContext().getAttribute("exchangeService");
+        this.validator = new ExchangeRequestValidator();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ExchangeRequestDto exchangeRequestDto = RequestUtil.getExchangeRequest(req);
-        exchangeRequestDto.validate();
+        validator.validate(exchangeRequestDto);
         Exchange exchangeResponse = exchangeService.findSpecific(exchangeRequestDto);
         resp.setStatus(HttpServletResponse.SC_OK);
         ExchangeResponseDto exchangeResponseDto = ExchangeMapper.INSTANCE.toDto(exchangeResponse);
