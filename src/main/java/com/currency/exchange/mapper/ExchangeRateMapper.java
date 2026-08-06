@@ -16,5 +16,4 @@ public interface ExchangeRateMapper {
 
     List<ExchangeRateResponseDto> toDtoList(List<ExchangeRate> exchangeRateList);
 
-    ExchangeRate toEntity(ExchangeRatesRequestDto exchangeRatesRequestDto);
 }
