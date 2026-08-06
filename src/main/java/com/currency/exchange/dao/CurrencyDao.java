@@ -8,8 +8,4 @@ import java.util.Optional;
 
 public interface CurrencyDao extends BaseDao<Currency> {
     Optional<Currency> findByCode(String code);
-
-    Currency getCurrency(ResultSet resultSet) throws SQLException;
-
-    void exists(Currency currency);
 }

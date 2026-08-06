@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class ExchangeRateDaoImpl implements ExchangeRateDao {
 
-    private final String SQL_QUERY_FINDAL_ALL = "SELECT " +
+    private static final String SQL_QUERY_FINDAL_ALL = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
             "bc.full_name," +
@@ -28,7 +28,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
             "FROM exchange_rates er " +
             "JOIN currencies bc ON er.base_currency_id = bc.id " +
             "JOIN currencies tc ON er.target_currency_id = tc.id";
-    private final String SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS = "SELECT " +
+    private static final String SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
             "bc.full_name," +
@@ -43,12 +43,12 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
             "JOIN currencies bc ON er.base_currency_id = bc.id " +
             "JOIN currencies tc ON er.target_currency_id = tc.id " +
             "WHERE bc.id = ? AND tc.id = ?";
-    private final String SQL_QUERY_SAVE_EXCHANGE_RATE = "INSERT INTO exchange_rates (base_currency_id, target_currency_id, rate) " +
+    private static final String SQL_QUERY_SAVE_EXCHANGE_RATE = "INSERT INTO exchange_rates (base_currency_id, target_currency_id, rate) " +
             "VALUES (?, ?, ?)";
-    private final String SQL_QUERY_PATCH_EXCHANGE_RATE = "UPDATE exchange_rates " +
+    private static final String SQL_QUERY_PATCH_EXCHANGE_RATE = "UPDATE exchange_rates " +
             "SET rate = ? " +
             "WHERE id = ?";
-    private final String SQL_QUERY_FIND_DIRECT_EXCHANGE_RATE_BY_PAIR_OF_CODES = "SELECT " +
+    private static final String SQL_QUERY_FIND_DIRECT_EXCHANGE_RATE_BY_PAIR_OF_CODES = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
             "bc.full_name," +
@@ -130,7 +130,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
         return exchangeRatesList;
     }
 
-    public ExchangeRate getExchangeRate(ResultSet rs) throws SQLException {
+    private ExchangeRate getExchangeRate(ResultSet rs) throws SQLException {
         int id = rs.getInt(1);
         Currency baseCurrency = new Currency(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5));
         Currency targetCurrency = new Currency(rs.getInt(6), rs.getString(7), rs.getString(8), rs.getString(9));
@@ -138,8 +138,8 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
         return new ExchangeRate(id, baseCurrency, targetCurrency, rate);
     }
 
-    @Override
-    public void exists(ExchangeRate exchangeRate) {
+
+    private void exists(ExchangeRate exchangeRate) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS)) {
             ps.setInt(1, exchangeRate.baseCurrency().id());

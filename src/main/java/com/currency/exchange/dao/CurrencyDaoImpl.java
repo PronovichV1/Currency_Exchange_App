@@ -14,11 +14,11 @@ import java.util.Optional;
 
 @Slf4j
 public class CurrencyDaoImpl implements CurrencyDao {
-    public final String SQL_QUERY_FIND_ALL_CURRENCIES = "SELECT * FROM currencies";
-    public final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * " +
+    private static final String SQL_QUERY_FIND_ALL_CURRENCIES = "SELECT * FROM currencies";
+    private static final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * " +
             "FROM currencies " +
             "WHERE code = ?";
-    public final String SQL_QUERY_POST_CURRENCY = "INSERT INTO currencies(full_name, code, sign) VALUES(?, ?, ?)";
+    private static final String SQL_QUERY_POST_CURRENCY = "INSERT INTO currencies(full_name, code, sign) VALUES(?, ?, ?)";
 
 
     @Override
@@ -73,8 +73,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return currencyList;
     }
 
-    @Override
-    public Currency getCurrency(ResultSet resultSet) throws SQLException {
+    private Currency getCurrency(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
         String name = resultSet.getString("full_name");
         String code = resultSet.getString("code");
@@ -82,8 +81,8 @@ public class CurrencyDaoImpl implements CurrencyDao {
         return new Currency(id, name, code, sign);
     }
 
-    @Override
-    public void exists(Currency currency) {
+
+    private void exists(Currency currency) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE)) {
             ps.setString(1, currency.code());
