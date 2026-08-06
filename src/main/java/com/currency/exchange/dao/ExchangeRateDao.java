@@ -11,5 +11,5 @@ public interface ExchangeRateDao extends BaseDao<ExchangeRate> {
     Optional<ExchangeRate> patch(ExchangeRate exchangeRate, BigDecimal rate);
 
 
-    Optional<ExchangeRate> findDirectPair(String codeA, String codeB);
+    Optional<ExchangeRate> findByCodes(String codeA, String codeB);
 }

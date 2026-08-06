@@ -46,7 +46,7 @@ public class ExchangeService {
 
 
     private Optional<Exchange> tryDirectExchange(String from, String to, ExchangeRequestDto request) {
-        Optional<ExchangeRate> directPair = exchangeRateDao.findDirectPair(from, to);
+        Optional<ExchangeRate> directPair = exchangeRateDao.findByCodes(from, to);
         if (directPair.isPresent()) {
             Exchange exchange = getExchange(directPair, request);
             return Optional.of(exchange);
@@ -56,7 +56,7 @@ public class ExchangeService {
     }
 
     private Optional<Exchange> tryReverseExchange(String from, String to, ExchangeRequestDto request) {
-        Optional<ExchangeRate> directPair = exchangeRateDao.findDirectPair(to, from);
+        Optional<ExchangeRate> directPair = exchangeRateDao.findByCodes(to, from);
         if (directPair.isPresent()) {
             Exchange exchange = getReverseExchange(directPair, request);
             return Optional.of(exchange);
@@ -74,8 +74,8 @@ public class ExchangeService {
     }
 
     private Optional<Exchange> exchangeByUsd(String from, String to, ExchangeRequestDto request) {
-        Optional<ExchangeRate> firstPair = exchangeRateDao.findDirectPair(USD, from);
-        Optional<ExchangeRate> secondPair = exchangeRateDao.findDirectPair(USD, to);
+        Optional<ExchangeRate> firstPair = exchangeRateDao.findByCodes(USD, from);
+        Optional<ExchangeRate> secondPair = exchangeRateDao.findByCodes(USD, to);
         if (firstPair.isPresent() && secondPair.isPresent()) {
             return Optional.of(getExchange(firstPair, secondPair, request));
         }

@@ -161,7 +161,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
     }
 
     @Override
-    public Optional<ExchangeRate> findDirectPair(String codeA, String codeB) {
+    public Optional<ExchangeRate> findByCodes(String codeA, String codeB) {
         Optional<ExchangeRate> directExchangePair = queryDatabase(SQL_QUERY_FIND_DIRECT_EXCHANGE_RATE_BY_PAIR_OF_CODES, codeA, codeB);
         return directExchangePair;
 
