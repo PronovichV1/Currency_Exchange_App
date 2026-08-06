@@ -24,8 +24,4 @@ public record ExchangeRequestDto(String from, String to, String amount) {
         }
 
     }
-
-    public double getParseAmount() {
-        return Double.parseDouble(this.amount);
-    }
 }

@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 @WebServlet("/exchangeRates")
@@ -44,7 +45,7 @@ public class ExchangeRatesServlet extends BaseServlet {
         String reqBaseCode = req.getParameter("baseCurrencyCode");
         String reqTargetCode = req.getParameter("targetCurrencyCode");
         String reqRateString = req.getParameter("rate");
-        double reqRate = Double.parseDouble(reqRateString);
+        BigDecimal reqRate = BigDecimal.valueOf(Double.valueOf(reqRateString));
         ExchangeRatesRequestDto exchangeRatesRequestDto = new ExchangeRatesRequestDto(reqBaseCode, reqTargetCode, reqRate);
         validator.validate(exchangeRatesRequestDto);
         ExchangeRate exchangeRateFromDb = exchangeRateService.save(exchangeRatesRequestDto);

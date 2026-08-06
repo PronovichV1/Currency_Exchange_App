@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @WebServlet("/exchangeRate/*")
 public class ExchangeRateServlet extends BaseServlet {
@@ -49,7 +50,7 @@ public class ExchangeRateServlet extends BaseServlet {
     @Override
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requestedCurrencies = req.getPathInfo();
-        double rate = getRate(req);
+        BigDecimal rate = getRate(req);
         ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(requestedCurrencies);
         validator.validate(exchangeRateRequestDto);
         ExchangeRate exchangeRate = exchangeRateService.updateRate(exchangeRateRequestDto, rate);
@@ -57,8 +58,8 @@ public class ExchangeRateServlet extends BaseServlet {
         objectMapper.writeValue(resp.getWriter(), exchangeRate);
     }
 
-    private static double getRate(HttpServletRequest req) {
-        double result;
+    private static BigDecimal getRate(HttpServletRequest req) {
+        BigDecimal result;
         String body;
         try (BufferedReader reader = req.getReader()) {
             body = reader.readLine();
@@ -66,7 +67,7 @@ public class ExchangeRateServlet extends BaseServlet {
                 throw new ValidationException("Please enter rate");
             }
             String rateValue = body.split("=")[1];
-            result = Double.parseDouble(rateValue);
+            result = BigDecimal.valueOf(Double.valueOf(rateValue));
             return result;
         } catch (IOException e) {
             throw new ValidationException("Failed to read request body");

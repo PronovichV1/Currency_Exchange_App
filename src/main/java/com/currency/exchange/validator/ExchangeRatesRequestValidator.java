@@ -3,6 +3,8 @@ package com.currency.exchange.validator;
 import com.currency.exchange.dto.request.ExchangeRatesRequestDto;
 import com.currency.exchange.exception.ValidationException;
 
+import java.math.BigDecimal;
+
 public class ExchangeRatesRequestValidator implements Validator<ExchangeRatesRequestDto>{
     @Override
     public void validate(ExchangeRatesRequestDto target) {
@@ -26,7 +28,7 @@ public class ExchangeRatesRequestValidator implements Validator<ExchangeRatesReq
             }
         }
 
-        if (target.rate() <= 0) {
+        if (target.rate().compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Exchange rate must be greater than zero");
         }
     }

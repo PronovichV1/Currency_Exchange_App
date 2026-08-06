@@ -1,4 +1,6 @@
 package com.currency.exchange.model;
 
-public record Exchange(Currency baseCurrency, Currency targetCurrency, double rate, double amount,double convertedAmount) {
+import java.math.BigDecimal;
+
+public record Exchange(Currency baseCurrency, Currency targetCurrency, BigDecimal rate, BigDecimal amount, BigDecimal convertedAmount) {
 }

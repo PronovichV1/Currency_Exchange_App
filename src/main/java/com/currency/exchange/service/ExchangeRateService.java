@@ -7,6 +7,7 @@ import com.currency.exchange.exception.ExchangeRateNotFoundException;
 import com.currency.exchange.model.Currency;
 import com.currency.exchange.model.ExchangeRate;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ExchangeRateService {
@@ -39,7 +40,7 @@ public class ExchangeRateService {
     }
 
 
-    public ExchangeRate updateRate(ExchangeRateRequestDto exchangeRateRequestDto, double rate) {
+    public ExchangeRate updateRate(ExchangeRateRequestDto exchangeRateRequestDto, BigDecimal rate) {
         ExchangeRate exchangeRate = findByCodePair(exchangeRateRequestDto);
         return exchangeRateDao.patch(exchangeRate, rate).orElseThrow();
     }

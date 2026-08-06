@@ -6,6 +6,7 @@ import com.currency.exchange.exception.ExchangeRateAlreadyExistException;
 import com.currency.exchange.model.Currency;
 import com.currency.exchange.model.ExchangeRate;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,10 +82,10 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
     }
 
     @Override
-    public Optional<ExchangeRate> patch(ExchangeRate exchangeRate, double rate) {
+    public Optional<ExchangeRate> patch(ExchangeRate exchangeRate, BigDecimal rate) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_PATCH_EXCHANGE_RATE)) {
-            ps.setDouble(1, rate);
+            ps.setBigDecimal(1, rate);
             ps.setInt(2, exchangeRate.id());
             ps.executeUpdate();
             return Optional.of(new ExchangeRate(exchangeRate.id(), exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), rate));
@@ -100,7 +101,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
             exists(exchangeRate);
             preparedStatement.setInt(1, exchangeRate.baseCurrency().id());
             preparedStatement.setInt(2, exchangeRate.targetCurrency().id());
-            preparedStatement.setDouble(3, exchangeRate.rate());
+            preparedStatement.setBigDecimal(3, exchangeRate.rate());
             preparedStatement.executeUpdate();
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -133,7 +134,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
         int id = rs.getInt(1);
         Currency baseCurrency = new Currency(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5));
         Currency targetCurrency = new Currency(rs.getInt(6), rs.getString(7), rs.getString(8), rs.getString(9));
-        double rate = rs.getDouble(10);
+        BigDecimal rate = BigDecimal.valueOf(Double.valueOf(rs.getDouble(10)));
         return new ExchangeRate(id, baseCurrency, targetCurrency, rate);
     }
 

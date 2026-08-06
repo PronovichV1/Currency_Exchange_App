@@ -2,12 +2,13 @@ package com.currency.exchange.dao;
 
 import com.currency.exchange.model.ExchangeRate;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public interface ExchangeRateDao extends BaseDao<ExchangeRate> {
     Optional<ExchangeRate> findSpecificExchangeRate(int baseCurrency, int targetCurrency);
 
-    Optional<ExchangeRate> patch(ExchangeRate exchangeRate, double rate);
+    Optional<ExchangeRate> patch(ExchangeRate exchangeRate, BigDecimal rate);
 
     void exists(ExchangeRate exchangeRate);
 

@@ -1,4 +1,6 @@
 package com.currency.exchange.model;
 
-public record ExchangeRate(int id, Currency baseCurrency, Currency targetCurrency, double rate) {
+import java.math.BigDecimal;
+
+public record ExchangeRate(int id, Currency baseCurrency, Currency targetCurrency, BigDecimal rate) {
 }

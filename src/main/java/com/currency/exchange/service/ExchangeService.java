@@ -5,6 +5,8 @@ import com.currency.exchange.dto.request.ExchangeRequestDto;
 import com.currency.exchange.model.Exchange;
 import com.currency.exchange.model.ExchangeRate;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -28,17 +30,17 @@ public class ExchangeService {
     private Exchange getExchange(Optional<ExchangeRate> firstPair, Optional<ExchangeRate> secondPair, ExchangeRequestDto exchangeRequestDto) {
         ExchangeRate first = firstPair.get();
         ExchangeRate second = secondPair.get();
-        double rate = second.rate() / first.rate();
-        double amount = exchangeRequestDto.getParseAmount();
-        double convertedAmount = rate * amount;
+        BigDecimal rate = second.rate().divide(first.rate(), 6, RoundingMode.HALF_UP);
+        BigDecimal amount = new BigDecimal(exchangeRequestDto.amount());
+        BigDecimal convertedAmount = rate.multiply(amount);
         return new Exchange(first.targetCurrency(), second.targetCurrency(), rate, amount, convertedAmount);
     }
 
     private Exchange getExchange(Optional<ExchangeRate> pairForExchange, ExchangeRequestDto exchangeRequestDto) {
         ExchangeRate exchangeRate = pairForExchange.get();
-        double rate = exchangeRate.rate();
-        double amount = exchangeRequestDto.getParseAmount();
-        double convertedAmount = rate * amount;
+        BigDecimal rate = exchangeRate.rate();
+        BigDecimal amount = new BigDecimal(exchangeRequestDto.amount());
+        BigDecimal convertedAmount = rate.multiply(amount);
         return new Exchange(exchangeRate.baseCurrency(), exchangeRate.targetCurrency(), rate, amount, convertedAmount);
     }
 
@@ -64,9 +66,9 @@ public class ExchangeService {
 
     private Exchange getReverseExchange(Optional<ExchangeRate> directPair, ExchangeRequestDto request) {
         ExchangeRate direct = directPair.get();
-        double rate = 1 / direct.rate();
-        double amount = request.getParseAmount();
-        double convertedAmount = rate * amount;
+        BigDecimal rate = new BigDecimal("1").divide(direct.rate(), 6, RoundingMode.HALF_UP);
+        BigDecimal amount = new BigDecimal(request.amount());
+        BigDecimal convertedAmount = rate.multiply(amount);
         return new Exchange(direct.targetCurrency(), direct.baseCurrency(), rate, amount, convertedAmount);
 
     }
