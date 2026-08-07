@@ -25,8 +25,6 @@ public class CurrencyDaoImpl implements CurrencyDao {
         this.dataSource = dataSource;
     }
 
-
-
     @Override
     public Optional<Currency> findByCode(String code) {
         try (Connection connection = dataSource.getConnection();
@@ -47,7 +45,6 @@ public class CurrencyDaoImpl implements CurrencyDao {
     public Optional<Currency> save(Currency currency) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_POST_CURRENCY, Statement.RETURN_GENERATED_KEYS)) {
-            exists(currency);
             ps.setString(1, currency.name());
             ps.setString(2, currency.code());
             ps.setString(3, currency.sign());
@@ -59,9 +56,26 @@ public class CurrencyDaoImpl implements CurrencyDao {
                 }
             }
         } catch (SQLException sqlException) {
+            if (isUniqueConstraintViolation(sqlException)){
+                throw new CurrencyAlreadyExistException("Currency with code '" + currency.code() + "' already exists");
+            }
+
             throw new DataBaseException("Failed to save the currency to the the database. SQL State: " + sqlException.getSQLState(), sqlException);
         }
         return Optional.empty();
+    }
+
+    private boolean isUniqueConstraintViolation(SQLException sqlException) {
+        if (sqlException == null){
+            return false;
+        }
+
+        if(sqlException.getErrorCode() == 19 || "23505".equals(sqlException.getSQLState())){
+            return true;
+        }
+
+        String message = sqlException.getMessage();
+        return message != null || message.contains("UNIQUE");
     }
 
     @Override
@@ -85,20 +99,5 @@ public class CurrencyDaoImpl implements CurrencyDao {
         String code = resultSet.getString("code");
         String sign = resultSet.getString("sign");
         return new Currency(id, name, code, sign);
-    }
-
-
-    private void exists(Currency currency) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE)) {
-            ps.setString(1, currency.code());
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    throw new CurrencyAlreadyExistException("Currency with this code already exists");
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataBaseException("Failed to connect to database", e);
-        }
     }
 }
