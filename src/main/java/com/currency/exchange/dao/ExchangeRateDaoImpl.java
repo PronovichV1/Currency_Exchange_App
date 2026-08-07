@@ -5,6 +5,7 @@ import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.exception.ExchangeRateAlreadyExistException;
 import com.currency.exchange.model.Currency;
 import com.currency.exchange.model.ExchangeRate;
+import com.currency.exchange.util.DataSource;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ExchangeRateDaoImpl implements ExchangeRateDao {
-
+    private DataSource dataSource;
     private static final String SQL_QUERY_FINDAL_ALL = "SELECT " +
             "er.id," +
             "bc.id AS base_currency_id," +
@@ -64,10 +65,14 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
             "JOIN currencies tc ON er.target_currency_id = tc.id " +
             "WHERE bc.code = ? AND tc.code = ?";
 
+    public ExchangeRateDaoImpl(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
+
 
     @Override
     public Optional<ExchangeRate> findSpecificExchangeRate(int baseCurrency, int targetCurrency) {
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS)) {
             ps.setInt(1, baseCurrency);
             ps.setInt(2, targetCurrency);
@@ -83,7 +88,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
 
     @Override
     public Optional<ExchangeRate> patch(ExchangeRate exchangeRate, BigDecimal rate) {
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_PATCH_EXCHANGE_RATE)) {
             ps.setBigDecimal(1, rate);
             ps.setInt(2, exchangeRate.id());
@@ -102,7 +107,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
 
     @Override
     public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_QUERY_SAVE_EXCHANGE_RATE, Statement.RETURN_GENERATED_KEYS)) {
             exists(exchangeRate);
             preparedStatement.setInt(1, exchangeRate.baseCurrency().id());
@@ -124,7 +129,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
     @Override
     public List<ExchangeRate> findAll() {
         List<ExchangeRate> exchangeRatesList = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FINDAL_ALL)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -146,7 +151,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
 
 
     private void exists(ExchangeRate exchangeRate) {
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_SPECIFIC_BY_PAIR_OF_IDS)) {
             ps.setInt(1, exchangeRate.baseCurrency().id());
             ps.setInt(2, exchangeRate.targetCurrency().id());
@@ -168,7 +173,7 @@ public class ExchangeRateDaoImpl implements ExchangeRateDao {
     }
 
     private Optional<ExchangeRate> queryDatabase(String sql, String firstCode, String secondCode) {
-        try (Connection cn = ConnectionManager.getConnection();
+        try (Connection cn = dataSource.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, firstCode);
             ps.setString(2, secondCode);

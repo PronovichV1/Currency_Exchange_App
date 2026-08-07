@@ -4,6 +4,9 @@ import com.currency.exchange.util.ConnectionManager;
 import com.currency.exchange.exception.CurrencyAlreadyExistException;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.model.Currency;
+import com.currency.exchange.util.DataSource;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
@@ -14,17 +17,23 @@ import java.util.Optional;
 
 @Slf4j
 public class CurrencyDaoImpl implements CurrencyDao {
+    private final DataSource dataSource;
     private static final String SQL_QUERY_FIND_ALL_CURRENCIES = "SELECT * FROM currencies";
     private static final String SQL_QUERY_FIND_CURRENCY_CODE = "SELECT * " +
             "FROM currencies " +
             "WHERE code = ?";
     private static final String SQL_QUERY_POST_CURRENCY = "INSERT INTO currencies(full_name, code, sign) VALUES(?, ?, ?)";
 
+    public CurrencyDaoImpl(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
+
+
 
     @Override
     public Optional<Currency> findByCode(String code) {
-        try (Connection connection = ConnectionManager.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE);
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE)) {
             ps.setString(1, code);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -39,7 +48,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
 
     @Override
     public Optional<Currency> save(Currency currency) {
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_POST_CURRENCY, Statement.RETURN_GENERATED_KEYS)) {
             exists(currency);
             ps.setString(1, currency.name());
@@ -61,7 +70,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
     @Override
     public List<Currency> findAll() {
         List<Currency> currencyList = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(SQL_QUERY_FIND_ALL_CURRENCIES);
             while (rs.next()) {
@@ -83,7 +92,7 @@ public class CurrencyDaoImpl implements CurrencyDao {
 
 
     private void exists(Currency currency) {
-        try (Connection connection = ConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(SQL_QUERY_FIND_CURRENCY_CODE)) {
             ps.setString(1, currency.code());
             try (ResultSet rs = ps.executeQuery()) {

@@ -3,6 +3,7 @@ package com.currency.exchange.listener;
 
 import com.currency.exchange.util.ConnectionManager;
 import com.currency.exchange.exception.DataBaseException;
+import com.currency.exchange.util.DataSource;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -13,15 +14,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.stream.Collectors;
 
-@WebListener
-public class DatabaseInitializer implements ServletContextListener {
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        initDatabase();
-    }
+public class DatabaseInitializer {
 
-    private void initDatabase() {
+
+    public void runScript(DataSource dataSource) {
+
         try (InputStream inputStream = DatabaseInitializer.class.getClassLoader().getResourceAsStream("init.sql")) {
             if (inputStream == null) {
                 throw new FileNotFoundException();
@@ -29,7 +27,7 @@ public class DatabaseInitializer implements ServletContextListener {
             String sqlScript = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n"));
             String[] sqlScriptArray = sqlScript.trim().split(";");
 
-            try (Connection connection = ConnectionManager.getConnection();
+            try (Connection connection = dataSource.getConnection();
                  Statement statement = connection.createStatement()) {
                 for (String line : sqlScriptArray) {
                     if (line.isEmpty()) {

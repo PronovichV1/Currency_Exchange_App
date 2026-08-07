@@ -24,7 +24,7 @@ public class CurrencyService {
                 .orElseThrow(() -> new CurrencyNotFoundException(String.format("Currency with code '%s' not found", code)));
     }
 
-    public Currency save(Currency currencyPostDto) {
-        return currencyDao.save(currencyPostDto).orElseThrow(() -> new IllegalStateException("Failed to save currency"));
+    public Currency save(Currency currency) {
+        return currencyDao.save(currency).orElseThrow(() -> new IllegalStateException("Failed to save currency"));
     }
 }
