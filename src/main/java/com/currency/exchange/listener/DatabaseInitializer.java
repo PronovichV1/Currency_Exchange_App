@@ -1,12 +1,8 @@
 
 package com.currency.exchange.listener;
 
-import com.currency.exchange.util.ConnectionManager;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.util.DataSource;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.annotation.WebListener;
 
 import java.io.*;
 import java.sql.Connection;

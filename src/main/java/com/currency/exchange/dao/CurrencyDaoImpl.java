@@ -1,12 +1,9 @@
 package com.currency.exchange.dao;
 
-import com.currency.exchange.util.ConnectionManager;
 import com.currency.exchange.exception.CurrencyAlreadyExistException;
 import com.currency.exchange.exception.DataBaseException;
 import com.currency.exchange.model.Currency;
 import com.currency.exchange.util.DataSource;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
