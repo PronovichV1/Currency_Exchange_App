@@ -2,6 +2,7 @@ package com.currency.exchange.service;
 
 import com.currency.exchange.dao.ExchangeRateDao;
 import com.currency.exchange.dto.request.ExchangeRequestDto;
+import com.currency.exchange.exception.ExchangeRateNotFoundException;
 import com.currency.exchange.model.Exchange;
 import com.currency.exchange.model.ExchangeRate;
 
@@ -24,7 +25,7 @@ public class ExchangeService {
         String codeB = exchangeRequestDto.to();
         return tryDirectExchange(codeA, codeB, exchangeRequestDto)
                 .or(() -> tryReverseExchange(codeA, codeB, exchangeRequestDto))
-                .or(() -> exchangeByUsd(codeA, codeB, exchangeRequestDto)).orElseThrow(() -> new NoSuchElementException("Operation is not possible for these currencies"));
+                .or(() -> exchangeByUsd(codeA, codeB, exchangeRequestDto)).orElseThrow(() -> new ExchangeRateNotFoundException("Operation is not possible for these currencies"));
     }
 
     private Exchange getExchange(Optional<ExchangeRate> firstPair, Optional<ExchangeRate> secondPair, ExchangeRequestDto exchangeRequestDto) {
