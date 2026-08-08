@@ -1,7 +1,10 @@
 package com.currency.exchange.servlet;
 
+import com.currency.exchange.dao.ExchangeRateDao;
+import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.exception.ValidationException;
 import com.currency.exchange.dto.request.ExchangeRateRequestDto;
+import com.currency.exchange.mapper.ExchangeRateMapper;
 import com.currency.exchange.model.ExchangeRate;
 import com.currency.exchange.service.ExchangeRateService;
 import com.currency.exchange.validator.ExchangeRateRequestValidator;
@@ -44,8 +47,9 @@ public class ExchangeRateServlet extends HttpServlet {
         ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(requestedCurrencies);
         validator.validate(exchangeRateRequestDto);
         ExchangeRate exchangeRate = exchangeRateService.findByCodePair(exchangeRateRequestDto);
+        ExchangeRateResponseDto responseDto = ExchangeRateMapper.INSTANCE.toDto(exchangeRate);
         resp.setStatus(HttpServletResponse.SC_OK);
-        objectMapper.writeValue(resp.getWriter(), exchangeRate);
+        objectMapper.writeValue(resp.getWriter(), responseDto);
     }
 
     @Override
@@ -55,8 +59,9 @@ public class ExchangeRateServlet extends HttpServlet {
         ExchangeRateRequestDto exchangeRateRequestDto = new ExchangeRateRequestDto(requestedCurrencies);
         validator.validate(exchangeRateRequestDto);
         ExchangeRate exchangeRate = exchangeRateService.updateRate(exchangeRateRequestDto, rate);
+        ExchangeRateResponseDto responseDto = ExchangeRateMapper.INSTANCE.toDto(exchangeRate);
         resp.setStatus(HttpServletResponse.SC_OK);
-        objectMapper.writeValue(resp.getWriter(), exchangeRate);
+        objectMapper.writeValue(resp.getWriter(), responseDto);
     }
 
     private static BigDecimal getRate(HttpServletRequest req) {
@@ -68,7 +73,10 @@ public class ExchangeRateServlet extends HttpServlet {
                 throw new ValidationException("Please enter rate");
             }
             String rateValue = body.split("=")[1];
-            result = BigDecimal.valueOf(Double.valueOf(rateValue));
+            result = new BigDecimal(rateValue);
+            if (result.compareTo(BigDecimal.ZERO) <= 0){
+                throw new ValidationException("Rate must be positive");
+            }
             return result;
         } catch (IOException e) {
             throw new ValidationException("Failed to read request body");
