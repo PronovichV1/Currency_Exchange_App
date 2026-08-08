@@ -41,15 +41,21 @@ public class ExchangeRatesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String reqBaseCode = req.getParameter("baseCurrencyCode");
-        String reqTargetCode = req.getParameter("targetCurrencyCode");
+        String reqBaseCode = getCleanParam(req, "baseCurrencyCode");
+        String reqTargetCode = getCleanParam(req, "targetCurrencyCode");
         String reqRateString = req.getParameter("rate");
-        BigDecimal reqRate = BigDecimal.valueOf(Double.valueOf(reqRateString));
-        ExchangeRatesRequestDto exchangeRatesRequestDto = new ExchangeRatesRequestDto(reqBaseCode, reqTargetCode, reqRate);
+        ExchangeRatesRequestDto exchangeRatesRequestDto = new ExchangeRatesRequestDto(reqBaseCode, reqTargetCode, reqRateString);
         validator.validate(exchangeRatesRequestDto);
         ExchangeRate exchangeRateFromDb = exchangeRateService.save(exchangeRatesRequestDto);
         resp.setStatus(HttpServletResponse.SC_CREATED);
         ExchangeRateResponseDto exchangeRateResponseDto = ExchangeRateMapper.INSTANCE.toDto(exchangeRateFromDb);
         objectMapper.writeValue(resp.getWriter(), exchangeRateResponseDto);
     }
+
+    private String getCleanParam(HttpServletRequest req, String name){
+        String parameter = req.getParameter(name);
+        return parameter != null ? parameter.trim().toUpperCase() : null;
+    }
 }
+
+

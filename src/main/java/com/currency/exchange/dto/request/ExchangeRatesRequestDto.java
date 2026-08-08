@@ -5,7 +5,7 @@ import com.currency.exchange.exception.ValidationException;
 import java.math.BigDecimal;
 
 public record ExchangeRatesRequestDto(String baseCurrencyCode, String targetCurrencyCode,
-                                      BigDecimal rate) {
+                                      String rate) {
 
     public ExchangeRatesRequestDto {
         if (baseCurrencyCode == null) {
