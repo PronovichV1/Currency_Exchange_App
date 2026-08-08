@@ -1,16 +1,15 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.util.RequestUtil;
 import com.currency.exchange.dto.request.ExchangeRatesRequestDto;
 import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.mapper.ExchangeRateMapper;
 import com.currency.exchange.model.ExchangeRate;
 import com.currency.exchange.service.ExchangeRateService;
-import com.currency.exchange.validator.ExchangeRateRequestValidator;
 import com.currency.exchange.validator.ExchangeRatesRequestValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -19,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @WebServlet("/exchangeRates")
-public class ExchangeRatesServlet extends BaseServlet {
+public class ExchangeRatesServlet extends HttpServlet {
     private ObjectMapper objectMapper;
     private ExchangeRateService exchangeRateService;
     private ExchangeRatesRequestValidator validator;

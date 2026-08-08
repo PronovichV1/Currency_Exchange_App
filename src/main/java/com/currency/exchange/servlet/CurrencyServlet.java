@@ -9,13 +9,14 @@ import com.currency.exchange.validator.CurrencyRequestValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
 @WebServlet("/currency/*")
-public class CurrencyServlet extends BaseServlet {
+public class CurrencyServlet extends HttpServlet {
     private ObjectMapper objectMapper;
     private CurrencyService currencyService;
     private CurrencyRequestValidator validator;

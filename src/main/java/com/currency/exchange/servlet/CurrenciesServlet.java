@@ -2,12 +2,12 @@ package com.currency.exchange.servlet;
 
 
 import com.currency.exchange.dto.request.CurrencyRequestForPostDto;
-import com.currency.exchange.util.DataSource;
 import com.currency.exchange.validator.CurrencyRequestForPostValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.currency.exchange.dto.response.CurrencyResponseDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.currency.exchange.mapper.CurrencyMapper;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/currencies")
-public class CurrenciesServlet extends BaseServlet {
+public class CurrenciesServlet extends HttpServlet {
     private ObjectMapper objectMapper;
     private CurrencyService currencyService;
     private CurrencyRequestForPostValidator validator;
