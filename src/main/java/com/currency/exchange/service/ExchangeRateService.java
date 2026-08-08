@@ -38,7 +38,7 @@ public class ExchangeRateService {
             throw new ValidationException("Base currency and target currency cannot be the same.");
         }
         ExchangeRate reqExchangeRate = new ExchangeRate(0, baseCurrency, targetCurrency, exchangeRatesRequestDto.rate());
-        return exchangeRateDao.save(reqExchangeRate).orElseThrow();
+        return exchangeRateDao.save(reqExchangeRate).orElseThrow(() -> new IllegalStateException("Failed to save currency"));
     }
 
 
