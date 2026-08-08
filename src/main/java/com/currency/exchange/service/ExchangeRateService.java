@@ -43,6 +43,9 @@ public class ExchangeRateService {
 
 
     public ExchangeRate updateRate(ExchangeRateRequestDto exchangeRateRequestDto, BigDecimal rate) {
+        if (rate.compareTo(BigDecimal.ZERO) <= 0){
+            throw new ValidationException("Rate value must be positive");
+        }
         ExchangeRate exchangeRate = findByCodePair(exchangeRateRequestDto);
         return exchangeRateDao.patch(exchangeRate, rate).orElseThrow();
     }
