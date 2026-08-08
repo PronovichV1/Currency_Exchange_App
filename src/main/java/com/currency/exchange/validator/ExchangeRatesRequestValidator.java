@@ -27,9 +27,15 @@ public class ExchangeRatesRequestValidator implements Validator<ExchangeRatesReq
                 throw new ValidationException("Target currency code must contain letters only");
             }
         }
-        BigDecimal rateBigDecimal = new BigDecimal(target.rate());
-        if (rateBigDecimal.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new ValidationException("Exchange rate must be greater than zero");
+        try {
+            BigDecimal rateBigDecimal = new BigDecimal(target.rate());
+            if (rateBigDecimal.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new ValidationException("Exchange rate must be greater than zero");
+            }
+        }catch(NumberFormatException e){
+            throw new ValidationException("Rate must be a valid number");
         }
+
+
     }
 }
