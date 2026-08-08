@@ -18,6 +18,7 @@ lists, as well as calculate conversions for arbitrary amounts from one currency 
 - Apache Tomcat
 - slf4j
 - MapStruct
+- HikariCP
 
 ## Features
 
