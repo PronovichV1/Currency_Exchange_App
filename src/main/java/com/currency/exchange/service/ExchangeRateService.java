@@ -27,9 +27,7 @@ public class ExchangeRateService {
     public ExchangeRate findByCodePair(ExchangeRateRequestDto exchangeRateRequestDto) {
         String baseCurrencyCode = exchangeRateRequestDto.requestedCurrencies().substring(0, 3);
         String targetCurrencyCode = exchangeRateRequestDto.requestedCurrencies().substring(3);
-        int baseCurrency = currencyService.findSpecific(baseCurrencyCode).id();
-        int targetCurrency = currencyService.findSpecific(targetCurrencyCode).id();
-        return exchangeRateDao.findSpecificExchangeRate(baseCurrency, targetCurrency).orElseThrow(() -> new ExchangeRateNotFoundException("Exchange rate does not exist"));
+        return exchangeRateDao.findByCodes(baseCurrencyCode, targetCurrencyCode).orElseThrow(() -> new ExchangeRateNotFoundException("Exchange rate does not exist"));
     }
 
     public ExchangeRate save(ExchangeRatesRequestDto exchangeRatesRequestDto) {
