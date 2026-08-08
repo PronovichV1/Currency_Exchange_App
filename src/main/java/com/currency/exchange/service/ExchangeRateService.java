@@ -4,6 +4,7 @@ import com.currency.exchange.dao.ExchangeRateDao;
 import com.currency.exchange.dto.request.ExchangeRateRequestDto;
 import com.currency.exchange.dto.request.ExchangeRatesRequestDto;
 import com.currency.exchange.exception.ExchangeRateNotFoundException;
+import com.currency.exchange.exception.ValidationException;
 import com.currency.exchange.model.Currency;
 import com.currency.exchange.model.ExchangeRate;
 
@@ -33,6 +34,9 @@ public class ExchangeRateService {
     public ExchangeRate save(ExchangeRatesRequestDto exchangeRatesRequestDto) {
         Currency baseCurrency = currencyService.findSpecific(exchangeRatesRequestDto.baseCurrencyCode());
         Currency targetCurrency = currencyService.findSpecific(exchangeRatesRequestDto.targetCurrencyCode());
+        if (baseCurrency.code().equalsIgnoreCase(targetCurrency.code())){
+            throw new ValidationException("Base currency and target currency cannot be the same.");
+        }
         ExchangeRate reqExchangeRate = new ExchangeRate(0, baseCurrency, targetCurrency, exchangeRatesRequestDto.rate());
         return exchangeRateDao.save(reqExchangeRate).orElseThrow();
     }
