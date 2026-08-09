@@ -22,7 +22,7 @@ public final class DataSource {
     private static final String PROPERTY_NAME = "db.properties";
     private static final String RESOURCES_KEY = "db.path";
 
-    public DataSource(){
+    static {
         try {
             dbPath = loadPathFromProperties();
             dbPath = DB_URL + dbPath;
@@ -46,7 +46,7 @@ public final class DataSource {
         }
     }
 
-    private String loadPathFromProperties() {
+    private static String loadPathFromProperties() {
         Properties properties = new Properties();
         String result;
 
