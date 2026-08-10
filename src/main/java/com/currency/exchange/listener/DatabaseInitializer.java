@@ -20,6 +20,8 @@ public class DatabaseInitializer {
             if (inputStream == null) {
                 throw new FileNotFoundException();
             }
+
+
             String sqlScript = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n"));
             String[] sqlScriptArray = sqlScript.trim().split(";");
 
@@ -38,5 +40,6 @@ public class DatabaseInitializer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 }

@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -61,7 +60,7 @@ public final class DataSource {
             if (result != null && result.equals("${DB_PATH}")) {
                 Properties envProps = new Properties();
                 /// read .env
-                try (FileInputStream inputStream = new FileInputStream(".env")){
+                try (FileInputStream inputStream = new FileInputStream("src/main/.env")){
                     envProps.load(inputStream);
                     result = envProps.getProperty("DB_PATH");
                 } catch (IOException e){
@@ -72,6 +71,11 @@ public final class DataSource {
         } catch (Exception e) {
             throw new RuntimeException("Error loading database configuration", e);
         }
+
+        if (result == null || result.isBlank()) {
+            result = "currency_exchange.db";
+        }
+
         return result;
     }
 
