@@ -1,9 +1,8 @@
 package com.currency.exchange.servlet;
 
-import com.currency.exchange.dao.ExchangeRateDao;
+import com.currency.exchange.dto.request.ExchangeRateRequestDto;
 import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.exception.ValidationException;
-import com.currency.exchange.dto.request.ExchangeRateRequestDto;
 import com.currency.exchange.mapper.ExchangeRateMapper;
 import com.currency.exchange.model.ExchangeRate;
 import com.currency.exchange.service.ExchangeRateService;

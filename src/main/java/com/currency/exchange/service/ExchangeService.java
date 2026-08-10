@@ -8,7 +8,6 @@ import com.currency.exchange.model.ExchangeRate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class ExchangeService {

@@ -2,7 +2,6 @@ package com.currency.exchange.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.Filter;
 
 import java.io.IOException;
 

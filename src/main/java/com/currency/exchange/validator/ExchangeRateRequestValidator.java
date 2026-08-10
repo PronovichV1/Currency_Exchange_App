@@ -2,11 +2,6 @@ package com.currency.exchange.validator;
 
 import com.currency.exchange.dto.request.ExchangeRateRequestDto;
 import com.currency.exchange.exception.ValidationException;
-import jakarta.servlet.http.HttpServletRequest;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.math.BigDecimal;
 
 public class ExchangeRateRequestValidator implements Validator<ExchangeRateRequestDto>{
     @Override

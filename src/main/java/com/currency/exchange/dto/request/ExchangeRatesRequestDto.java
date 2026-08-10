@@ -2,9 +2,6 @@ package com.currency.exchange.dto.request;
 
 import com.currency.exchange.exception.ValidationException;
 
-import java.math.BigDecimal;
-import java.util.Locale;
-
 public record ExchangeRatesRequestDto(String baseCurrencyCode, String targetCurrencyCode,
                                       String rate) {
 

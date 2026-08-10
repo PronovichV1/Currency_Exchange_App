@@ -1,9 +1,7 @@
 package com.currency.exchange.mapper;
 
-import com.currency.exchange.dto.response.ExchangeRateResponseDto;
 import com.currency.exchange.dto.response.ExchangeResponseDto;
 import com.currency.exchange.model.Exchange;
-import org.mapstruct.ap.internal.model.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @org.mapstruct.Mapper
