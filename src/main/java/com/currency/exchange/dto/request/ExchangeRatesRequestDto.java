@@ -3,6 +3,7 @@ package com.currency.exchange.dto.request;
 import com.currency.exchange.exception.ValidationException;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 public record ExchangeRatesRequestDto(String baseCurrencyCode, String targetCurrencyCode,
                                       String rate) {
@@ -19,6 +20,9 @@ public record ExchangeRatesRequestDto(String baseCurrencyCode, String targetCurr
         if (rate == null) {
             throw new ValidationException("Exchange rate is required");
         }
+
+        baseCurrencyCode = baseCurrencyCode.trim().toUpperCase();
+        targetCurrencyCode = targetCurrencyCode.trim().toUpperCase();
     }
 
 }
